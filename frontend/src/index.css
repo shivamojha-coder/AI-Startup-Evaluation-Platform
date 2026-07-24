@@ -1,0 +1,130 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-brand: #4361EE;
+  --color-brand-light: #EEF2FF;
+  --color-brand-dark: #3B5BDB;
+  --color-brand-muted: #C7D2FE;
+  --color-navy: #111827;
+  --color-navy-footer: #0A0F1E;
+  --color-navy-border: rgba(255, 255, 255, 0.08);
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-sans);
+    color: #111827;
+    background-color: #FFFFFF;
+  }
+  
+  body {
+    overflow-x: hidden;
+    background-color: #FFFFFF;
+  }
+}
+
+@keyframes blobFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(5deg); }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-blob-float {
+  animation: blobFloat 6s ease-in-out infinite;
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, #4361EE 0%, #C44BFF 50%, #FF6B9D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes rotateBorder {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-rotate-border {
+  animation: rotateBorder 3s linear infinite;
+}
+
+@keyframes flipOutLeft {
+  0% {
+    transform: perspective(1400px) rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(1400px) rotateY(-90deg) scale(0.92);
+    opacity: 0;
+  }
+}
+
+@keyframes flipInRight {
+  0% {
+    transform: perspective(1400px) rotateY(90deg) scale(0.92);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(1400px) rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes flipOutRight {
+  0% {
+    transform: perspective(1400px) rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(1400px) rotateY(90deg) scale(0.92);
+    opacity: 0;
+  }
+}
+
+@keyframes flipInLeft {
+  0% {
+    transform: perspective(1400px) rotateY(-90deg) scale(0.92);
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(1400px) rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-flip-out-left {
+  animation: flipOutLeft 0.26s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.animate-flip-in-right {
+  animation: flipInRight 0.35s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+.animate-flip-out-right {
+  animation: flipOutRight 0.26s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.animate-flip-in-left {
+  animation: flipInLeft 0.35s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
