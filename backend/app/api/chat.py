@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, cast
 from groq import Groq
 
 from app.api.deps import require_role
@@ -27,11 +27,6 @@ class ChatResponse(BaseModel):
     session_id: str
 
 
-class CreateSessionRequest(BaseModel):
-    startup_id: Optional[str] = None
-    title: Optional[str] = "New Chat"
-
-
 class UpdateSessionRequest(BaseModel):
     is_pinned: Optional[bool] = None
     title: Optional[str] = None
@@ -53,7 +48,10 @@ def _get_startup_context(startup_id: str) -> str:
             .execute()
         )
         if eval_resp.data:
-            eval_id = eval_resp.data[0]["id"]
+            row = eval_resp.data[0]
+            if not isinstance(row, dict):
+                return "No context available."
+            eval_id = row["id"]
             summary_resp = (
                 supabase_service_client.table("executive_summaries")
                 .select("*")
@@ -94,29 +92,6 @@ def get_chat_sessions(current_user: dict = Depends(require_role("investor"))):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# POST /chat/sessions — create a new chat session
-# ─────────────────────────────────────────────────────────────────────────────
-
-@router.post("/sessions", summary="Create a new chat session")
-def create_chat_session(
-    body: CreateSessionRequest,
-    current_user: dict = Depends(require_role("investor")),
-):
-    user_id = current_user["id"]
-    payload = {
-        "user_id": user_id,
-        "title": body.title or "New Chat",
-    }
-    if body.startup_id:
-        payload["startup_id"] = body.startup_id
-
-    resp = supabase_service_client.table("chat_sessions").insert(payload).execute()
-    if not resp.data:
-        raise HTTPException(status_code=500, detail="Failed to create session")
-    return resp.data[0]
-
-
-# ─────────────────────────────────────────────────────────────────────────────
 # PATCH /chat/sessions/{session_id} — update title or pin status
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -127,7 +102,7 @@ def update_chat_session(
     current_user: dict = Depends(require_role("investor")),
 ):
     user_id = current_user["id"]
-    update_data = {}
+    update_data: dict[str, bool | str] = {}
     if body.is_pinned is not None:
         update_data["is_pinned"] = body.is_pinned
     if body.title is not None:
@@ -233,7 +208,7 @@ def startup_ai_chat(
 
             if not sess_resp.data:
                 raise HTTPException(status_code=500, detail="Failed to create chat session")
-            session_id = sess_resp.data[0]["id"]
+            session_id = cast(dict, sess_resp.data[0])["id"]
         else:
             # Update session timestamp & attach startup_id if missing
             supabase_service_client.table("chat_sessions").update({

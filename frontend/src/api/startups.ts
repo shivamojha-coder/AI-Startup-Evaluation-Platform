@@ -350,16 +350,6 @@ export async function getChatSessions(): Promise<ChatSession[]> {
   return response.json();
 }
 
-export async function createChatSession(startup_id?: string, title?: string): Promise<ChatSession> {
-  const response = await fetch(`${API_URL}/chat/sessions`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify({ startup_id: startup_id ?? null, title: title ?? "New Chat" }),
-    credentials: "include",
-  });
-  if (!response.ok) throw new Error(`Failed to create chat session (${response.status})`);
-  return response.json();
-}
 
 export async function updateChatSession(
   sessionId: string,
