@@ -1,0 +1,46 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script_stop: true
+
+          script: |
+            set -e
+
+            APP_DIR="/home/ubuntu/AI-Startup-Evaluation-Platform/backend"
+
+            cd $APP_DIR
+
+            git fetch origin
+            git reset --hard origin/main
+
+            source venv/bin/activate
+
+            pip install --upgrade pip
+            pip install -r requirements.txt
+
+            sudo systemctl daemon-reload
+            sudo systemctl restart ventureai
+
+            curl --fail http://127.0.0.1:8000/docs > /dev/null
+
+            echo "✅ Deployment Successful"
