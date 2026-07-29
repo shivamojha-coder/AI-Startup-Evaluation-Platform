@@ -1,0 +1,64 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script_stop: true
+
+          script: |
+            set -e
+
+            APP_DIR="/home/ubuntu/AI-Startup-Evaluation-Platform/backend"
+
+            cd $APP_DIR
+
+            echo "Fetching latest code..."
+            git fetch origin
+            git reset --hard origin/main
+
+            echo "Activating virtual environment..."
+            source venv/bin/activate
+
+            echo "Upgrading pip..."
+            pip install --upgrade pip
+
+            echo "Installing dependencies..."
+            pip install -r requirements.txt
+
+            echo "Restarting VentureAI service..."
+            sudo systemctl daemon-reload
+            sudo systemctl restart ventureai
+
+            echo "Waiting for backend to become healthy..."
+
+            for i in {1..10}; do
+              if curl --fail http://127.0.0.1:8000/docs > /dev/null; then
+                echo "✅ Deployment Successful"
+                exit 0
+              fi
+
+              echo "Attempt $i failed. Retrying in 2 seconds..."
+              sleep 2
+            done
+
+            echo "❌ Backend failed to start"
+            sudo systemctl status ventureai --no-pager
+            exit 1
