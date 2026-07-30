@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { getDealflow, getDealflowStats, requestMeeting, getInvestorMeetings, toggleShortlistAPI, getShortlistedAPI } from "../api/startups";
 import type { DealflowStatsResponse } from "../api/startups";
 import type { DealflowResponse } from "../schemas/startup";
+import { SpotlightCard } from "../components/SpotlightCard";
 import { User, MapPin, Heart, Calendar } from "lucide-react";
 
 export const DashboardInvestor: React.FC = () => {
@@ -277,8 +278,9 @@ export const DashboardInvestor: React.FC = () => {
           {/* Startups Grid */}
           <div className="grid gap-6 md:grid-cols-2">
             {filteredStartups.map(startup => (
-              <div 
+              <SpotlightCard 
                 key={startup.id}
+                spotlightColor="rgba(249, 115, 22, 0.18)"
                 onClick={() => navigate(`/investor/report/${startup.id}`)}
                 className="rounded-2xl bg-[#141414] border border-[rgba(255,255,255,0.08)] shadow-xl hover:border-[#FE9638]/50 p-5 transition-all relative flex flex-col group cursor-pointer hover:-translate-y-1"
               >
@@ -408,7 +410,7 @@ export const DashboardInvestor: React.FC = () => {
                     Review Startup <span className="text-lg">→</span>
                   </button>
                 </div>
-              </div>
+              </SpotlightCard>
             ))}
             
             {filteredStartups.length === 0 && (
