@@ -1,12 +1,14 @@
 import logging
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from typing import Optional, cast
+from typing import Any, Optional, cast, Literal
 from groq import Groq
+from groq.types.chat import ChatCompletionMessageParam
 
 from app.api.deps import require_role
 from app.core.supabase_client import supabase_service_client
 from app.core.config import settings
+from app.agents.base import load_prompt
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -37,7 +39,30 @@ class UpdateSessionRequest(BaseModel):
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _get_startup_context(startup_id: str) -> str:
+    context_parts = []
     try:
+        # 1. Fetch Startup basic details
+        startup_resp = (
+            supabase_service_client.table("startups")
+            .select("*")
+            .eq("id", startup_id)
+            .execute()
+        )
+        if startup_resp.data:
+            s_data = startup_resp.data[0]
+            if isinstance(s_data, dict):
+                context_parts.append(
+                    f"### STARTUP BASIC INFO\n"
+                    f"Startup Name: {s_data.get('startup_name', '')}\n"
+                    f"Tagline: {s_data.get('tagline', '')}\n"
+                    f"Industry: {s_data.get('industry', '')}\n"
+                    f"Stage: {s_data.get('stage', '')}\n"
+                    f"Description: {s_data.get('description', '')}\n"
+                    f"Funding Raised: {s_data.get('funding_raised', '')}\n"
+                    f"Team Size: {s_data.get('team_size', '')}\n"
+                )
+
+        # 2. Fetch latest completed evaluation metadata
         eval_resp = (
             supabase_service_client.table("evaluations")
             .select("id")
@@ -49,28 +74,86 @@ def _get_startup_context(startup_id: str) -> str:
         )
         if eval_resp.data:
             row = eval_resp.data[0]
-            if not isinstance(row, dict):
-                return "No context available."
-            eval_id = row["id"]
-            summary_resp = (
-                supabase_service_client.table("executive_summaries")
-                .select("*")
-                .eq("evaluation_id", eval_id)
-                .execute()
-            )
-            if summary_resp.data:
-                s = summary_resp.data[0]
-                if not isinstance(s, dict):
-                    return "No context available."
-                return (
-                    f"Startup Problem: {s.get('problem', '')}\n"
-                    f"Startup Solution: {s.get('solution', '')}\n"
-                    f"Business Model: {s.get('business_model', '')}\n"
-                    f"Traction: {s.get('traction', '')}"
+            if isinstance(row, dict):
+                eval_id = row["id"]
+                
+                # 3. Fetch Complete Executive Summary
+                summary_resp = (
+                    supabase_service_client.table("executive_summaries")
+                    .select("*")
+                    .eq("evaluation_id", eval_id)
+                    .execute()
                 )
-    except Exception:
-        pass
-    return "No context available."
+                if summary_resp.data:
+                    s = summary_resp.data[0]
+                    if isinstance(s, dict):
+                        context_parts.append(
+                            f"### EXECUTIVE SUMMARY & PITCH DETAILS\n"
+                            f"Problem: {s.get('problem', '')}\n"
+                            f"Solution: {s.get('solution', '')}\n"
+                            f"Target Market: {s.get('target_market', '')}\n"
+                            f"Business Model: {s.get('business_model', '')}\n"
+                            f"Traction: {s.get('traction', '')}\n"
+                            f"Executive Summary Text: {s.get('executive_summary', '')}\n"
+                        )
+
+                # 4. Fetch Scores and Score Reasoning
+                scores_resp = (
+                    supabase_service_client.table("scores")
+                    .select("*")
+                    .eq("evaluation_id", eval_id)
+                    .execute()
+                )
+                if scores_resp.data:
+                    sc = scores_resp.data[0]
+                    if isinstance(sc, dict):
+                        context_parts.append(
+                            f"### EVALUATION SCORES\n"
+                            f"Overall Startup Score: {sc.get('startup_score', 0)}/100\n"
+                            f"Market Opportunity Score: {sc.get('market_opportunity', 0)}/100\n"
+                            f"Product Innovation Score: {sc.get('product_innovation', 0)}/100\n"
+                            f"Team Strength Score: {sc.get('team_strength', 0)}/100\n"
+                            f"Business Model Score: {sc.get('business_model_score', 0)}/100\n"
+                            f"Competitive Advantage Score: {sc.get('competitive_advantage', 0)}/100\n"
+                            f"Traction Score: {sc.get('traction_score', 0)}/100\n"
+                            f"Scalability Score: {sc.get('scalability', 0)}/100\n"
+                            f"Score Reasoning: {sc.get('score_reasoning', '')}\n"
+                        )
+
+                # 5. Fetch Identified Risks
+                risks_resp = (
+                    supabase_service_client.table("identified_risks")
+                    .select("*")
+                    .eq("evaluation_id", eval_id)
+                    .execute()
+                )
+                if risks_resp.data:
+                    risks_list = []
+                    for r in risks_resp.data:
+                        if isinstance(r, dict):
+                            severity_val = str(r.get("severity") or "medium")
+                            risks_list.append(f"- [{severity_val.upper()}] {r.get('category', '')}: {r.get('risk', '')}")
+                    if risks_list:
+                        context_parts.append("### IDENTIFIED RISKS & SEVERITY\n" + "\n".join(risks_list) + "\n")
+
+                # 6. Fetch Investor Questions
+                questions_resp = (
+                    supabase_service_client.table("investor_questions")
+                    .select("*")
+                    .eq("evaluation_id", eval_id)
+                    .execute()
+                )
+                if questions_resp.data:
+                    q_list = []
+                    for q in questions_resp.data:
+                        if isinstance(q, dict):
+                            q_list.append(f"- ({q.get('category', '')}) {q.get('question', '')}")
+                    if q_list:
+                        context_parts.append("### SUGGESTED INVESTOR DUE DILIGENCE QUESTIONS\n" + "\n".join(q_list) + "\n")
+    except Exception as e:
+        logger.error(f"Error fetching startup context: {e}")
+        
+    return "\n".join(context_parts) if context_parts else "No context available."
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -216,6 +299,29 @@ def startup_ai_chat(
                 "updated_at": "now()",
             }).eq("id", session_id).eq("user_id", user_id).execute()
 
+        # Load conversation history for memory before inserting the new user message
+        history_messages: list[ChatCompletionMessageParam] = []
+        if request.session_id:
+            history_resp = (
+                supabase_service_client.table("chat_messages")
+                .select("role", "content")
+                .eq("session_id", session_id)
+                .order("created_at", desc=False)
+                .execute()
+            )
+            if history_resp.data:
+                for msg in history_resp.data:
+                    if isinstance(msg, dict):
+                        role_val = msg.get("role")
+                        content_val = msg.get("content")
+                        if isinstance(role_val, str) and isinstance(content_val, str):
+                            role: Literal["assistant", "user"] = (
+                                "assistant" if role_val == "ai" else "user"
+                            )
+                            history_messages.append(
+                                cast(ChatCompletionMessageParam, {"role": role, "content": content_val})
+                            )
+
         # ── 2. Save user message ─────────────────────────────────────────────
         supabase_service_client.table("chat_messages").insert({
             "session_id": session_id,
@@ -229,14 +335,17 @@ def startup_ai_chat(
         if not groq_client:
             raise HTTPException(status_code=500, detail="Missing GROQ_API_KEY")
 
-        prompt = f"""You are an AI assistant helping a Venture Capital investor evaluate a startup.
-Answer their question concisely based on this startup context:
-{context_text}
+        # Load detailed system prompt template
+        system_prompt = load_prompt("chatbot_prompt.md")
+        system_content = f"{system_prompt}\n\n## STARTUP CONTEXT\n{context_text}"
 
-Investor Question: {request.question}"""
+        # Combine system prompt with history and the latest user message
+        messages: list[ChatCompletionMessageParam] = [{"role": "system", "content": system_content}]
+        messages.extend(history_messages)
+        messages.append({"role": "user", "content": request.question})
 
         chat_res = groq_client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
+            messages=messages,
             model="llama-3.3-70b-versatile",
         )
 
