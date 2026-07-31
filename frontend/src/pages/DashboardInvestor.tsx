@@ -10,6 +10,8 @@ import { TextType } from "../components/ui/TextType";
 import { ShinyText } from "../components/ui/ShinyText";
 import { CountUp } from "../components/landing/ui/CountUp";
 import { User, MapPin, Heart, Calendar } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { DashboardSkeleton } from "../components/skeletons/DashboardSkeleton";
 
 export const DashboardInvestor: React.FC = () => {
   const { user, loading } = useAuth();
@@ -160,13 +162,7 @@ export const DashboardInvestor: React.FC = () => {
     setFilteredStartups(result);
   }, [searchQuery, industryFilter, stageFilter, startups, location.hash, shortlistedIds, meetingRequests]);
 
-  if (loading || dataLoading) {
-    return (
-      <div className="flex flex-1 items-center justify-center bg-transparent min-h-screen">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FE9638] border-t-transparent"></div>
-      </div>
-    );
-  }
+
 
   if (!user || user.role !== "investor") {
     return null;
@@ -185,7 +181,27 @@ export const DashboardInvestor: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-1 flex-col bg-transparent p-6 sm:p-10 text-[#FAFAFA] min-h-screen relative">
+    <AnimatePresence mode="wait">
+      {loading || dataLoading ? (
+        <motion.div
+          key="skeleton"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+          className="w-full flex flex-1 flex-col"
+        >
+          <DashboardSkeleton />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="content"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+          className="w-full flex flex-1 flex-col"
+        >
+          <div className="flex flex-1 flex-col bg-transparent p-6 sm:p-10 text-[#FAFAFA] min-h-screen relative">
       <div className="mx-auto max-w-[1400px] w-full flex flex-col xl:flex-row gap-8 pb-20">
         
         {/* Main Content Area */}
@@ -293,7 +309,7 @@ export const DashboardInvestor: React.FC = () => {
                   onChange={(e) => setIndustryFilter(e.target.value)}
                   className="bg-[#1C1C1C] border border-[rgba(255,255,255,0.08)] rounded-xl py-3 px-3 text-xs sm:text-sm text-[#FAFAFA] focus:outline-none focus:border-[#FE9638]/50"
                 >
-                  <option value="">Industry ▼</option>
+                  <option value="">Industry Γû╝</option>
                   {industries.map(ind => <option key={ind} value={ind}>{ind}</option>)}
                 </select>
                 
@@ -302,7 +318,7 @@ export const DashboardInvestor: React.FC = () => {
                   onChange={(e) => setStageFilter(e.target.value)}
                   className="bg-[#1C1C1C] border border-[rgba(255,255,255,0.08)] rounded-xl py-3 px-3 text-xs sm:text-sm text-[#FAFAFA] focus:outline-none focus:border-[#FE9638]/50"
                 >
-                  <option value="">Stage ▼</option>
+                  <option value="">Stage Γû╝</option>
                   {stages.map(stg => <option key={stg} value={stg}>{stg}</option>)}
                 </select>
 
@@ -336,7 +352,7 @@ export const DashboardInvestor: React.FC = () => {
                         )}
                         {startup.founder_name}
                       </span>
-                      <span>•</span>
+                      <span>ΓÇó</span>
                       <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {startup.location}</span>
                     </p>
                     <div className="flex flex-wrap gap-2 mt-3">
@@ -446,7 +462,7 @@ export const DashboardInvestor: React.FC = () => {
                   </div>
                   
                   <button className="flex items-center gap-2 text-sm font-bold text-[#FE9638] group-hover:translate-x-1 transition-transform">
-                    Review Startup <span className="text-lg">→</span>
+                    Review Startup <span className="text-lg">ΓåÆ</span>
                   </button>
                 </div>
               </SpotlightCard>
@@ -550,6 +566,9 @@ export const DashboardInvestor: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
