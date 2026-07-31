@@ -12,7 +12,7 @@ export const StatsCounter: React.FC = () => {
   ];
 
   return (
-    <section className="bg-[#0A0A0A] py-16 border-y border-[rgba(255,255,255,0.08)]">
+    <section className="bg-transparent py-16 border-y border-[rgba(255,255,255,0.08)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {metrics.map((item, idx) => (

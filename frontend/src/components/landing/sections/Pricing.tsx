@@ -8,7 +8,7 @@ export const Pricing: React.FC = () => {
   const [annual, setAnnual] = useState(true);
 
   return (
-    <section id="pricing" className="bg-[#0A0A0A] py-24 border-t border-[rgba(255,255,255,0.08)] relative overflow-hidden">
+    <section id="pricing" className="bg-transparent py-24 border-t border-[rgba(255,255,255,0.08)] relative overflow-hidden">
       {/* Background ambient glow */}
       <div
         className="absolute left-1/2 top-1/3 -translate-x-1/2 w-[700px] h-[350px] rounded-full pointer-events-none z-0"

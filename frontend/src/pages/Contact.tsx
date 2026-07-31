@@ -9,7 +9,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <div className="pt-16 pb-24 bg-[#0A0A0A] text-[#FAFAFA] min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+    <div className="pt-16 pb-24 bg-transparent text-[#FAFAFA] min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left info */}

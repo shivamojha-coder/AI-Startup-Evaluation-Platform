@@ -18,7 +18,7 @@ import { ScrollReveal } from "../components/landing/ui/ScrollReveal";
 
 export const PlatformHomepage: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-[#0A0A0A] text-[#FAFAFA] font-sans selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+    <div className="min-h-screen flex flex-col bg-transparent text-[#FAFAFA] font-sans selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
       {/* [SECTION 1] ANNOUNCEMENT BAR & STICKY NAVBAR */}
       <Navbar />
 

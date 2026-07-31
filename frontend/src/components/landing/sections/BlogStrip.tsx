@@ -135,7 +135,7 @@ export const BlogStrip: React.FC = () => {
     : allArticles.filter((art) => art.category === activeCategory);
 
   return (
-    <section id="resources" className="bg-[#0A0A0A] py-24 border-t border-[rgba(255,255,255,0.08)] relative">
+    <section id="resources" className="bg-transparent py-24 border-t border-[rgba(255,255,255,0.08)] relative">
       {/* Absolute anchor offsets for smooth navbar dropdown navigation */}
       <div id="pitch-deck-guides" className="absolute -top-24" />
       <div id="fundraising-guides" className="absolute -top-24" />

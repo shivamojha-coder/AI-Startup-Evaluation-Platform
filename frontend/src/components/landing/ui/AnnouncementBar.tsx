@@ -5,7 +5,7 @@ import React from "react";
 export const AnnouncementBar: React.FC = () => {
   return (
     <div
-      className="relative w-full overflow-hidden bg-[#0A0A0A] border-b border-[rgba(255,255,255,0.08)] py-2.5 px-4 z-50 flex items-center justify-center min-h-[40px]"
+      className="relative w-full overflow-hidden bg-transparent border-b border-[rgba(255,255,255,0.08)] py-2.5 px-4 z-50 flex items-center justify-center min-h-[40px]"
       style={{
         backgroundImage: "radial-gradient(ellipse 600px 60px at 50% 0%, rgba(254,150,56,0.15), transparent)",
       }}

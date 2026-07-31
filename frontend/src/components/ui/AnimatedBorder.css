@@ -1,0 +1,48 @@
+.animated-border-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem; /* rounded-2xl */
+  pointer-events: none;
+  overflow: hidden;
+  /* The padding defines the border width */
+  padding: 1.5px;
+  /* Mask out the center, leaving only the 1.5px rim */
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: 10; /* Ensures it sits above other background elements */
+}
+
+.animated-border-beam {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  /* Orange gradient streak with a sharp head and a long fading tail */
+  background: conic-gradient(
+    transparent 0%,
+    transparent 60%,
+    rgba(249, 115, 22, 0.1) 70%,
+    #F97316 95%,
+    #FB923C 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  animation: spin-beam 3.5s linear infinite;
+  /* Pause animation when not hovered for performance */
+  animation-play-state: paused;
+}
+
+/* Play animation and fade in on hover */
+.group:hover .animated-border-beam {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+@keyframes spin-beam {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -17,14 +17,21 @@
   html {
     scroll-behavior: smooth;
     font-family: var(--font-sans);
-    color: #111827;
-    background-color: #FFFFFF;
   }
   
   body {
     overflow-x: hidden;
-    background-color: #FFFFFF;
   }
+}
+
+html, body {
+  background-color: #0A0A0A !important;
+  color: #FAFAFA !important;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 @keyframes blobFloat {

@@ -456,7 +456,7 @@ export const StartupDocuments: React.FC = () => {
   // ── Render ──────────────────────────────────────────────────────────────────
   if (authLoading || loading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-[#0A0A0A] text-[#FAFAFA] min-h-screen">
+      <div className="flex flex-1 items-center justify-center bg-transparent text-[#FAFAFA] min-h-screen">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FE9638] border-t-transparent" />
       </div>
     );
@@ -474,7 +474,7 @@ export const StartupDocuments: React.FC = () => {
         }
       `}</style>
 
-      <div className="flex flex-1 flex-col bg-[#0A0A0A] p-8 text-[#FAFAFA] relative min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+      <div className="flex flex-1 flex-col bg-transparent p-8 text-[#FAFAFA] relative min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
         <div className="mx-auto w-full max-w-5xl space-y-8">
 
           {/* ── Header ── */}
@@ -638,7 +638,7 @@ export const StartupDocuments: React.FC = () => {
 
         {/* ── Delete Confirmation Modal ── */}
         {documentToDelete && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A0A0A]/80 backdrop-blur-sm p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent/80 backdrop-blur-sm p-4">
             <div className="w-full max-w-md rounded-3xl bg-[#141414] border border-[rgba(255,255,255,0.12)] p-8 shadow-2xl">
               <h3 className="mb-2 text-xl font-bold text-[#FAFAFA]">Delete Document</h3>
               <div className="mb-6 space-y-4">

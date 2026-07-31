@@ -42,7 +42,7 @@ export const ProductPillars: React.FC = () => {
   const currentSlide = slideTabs[activeSlideTab];
 
   return (
-    <section id="investor-matching" className="bg-[#0A0A0A] py-24 border-t border-[rgba(255,255,255,0.08)]">
+    <section id="investor-matching" className="bg-transparent py-24 border-t border-[rgba(255,255,255,0.08)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-36">
         {/* BLOCK 1 — Investor Matching */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">

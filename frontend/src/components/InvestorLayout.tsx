@@ -30,7 +30,7 @@ export const InvestorLayout: React.FC<{ children: React.ReactNode }> = ({ childr
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a] text-[#ffffff] font-sans antialiased selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+    <div className="flex min-h-screen bg-transparent text-[#ffffff] font-sans antialiased selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
       {/* Left Sidebar: fixed, 240px wide, full height */}
       <aside className="w-[240px] bg-[#0f0f0f] border-r border-[#1e1e1e] flex flex-col fixed inset-y-0 left-0 z-50">
         

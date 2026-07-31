@@ -8,6 +8,7 @@ export interface CountUpProps {
   prefix?: string;
   suffix?: string;
   separator?: string;
+  className?: string;
 }
 
 export const CountUp: React.FC<CountUpProps> = ({
@@ -16,6 +17,7 @@ export const CountUp: React.FC<CountUpProps> = ({
   prefix = "",
   suffix = "",
   separator = ",",
+  className = "inline-block font-extrabold text-[#FAFAFA]",
 }) => {
   const [count, setCount] = useState<number>(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -61,7 +63,7 @@ export const CountUp: React.FC<CountUpProps> = ({
   };
 
   return (
-    <span ref={ref} className="inline-block font-extrabold text-[#FAFAFA]">
+    <span ref={ref} className={className}>
       {prefix}
       {formatNumber(count)}
       {suffix}

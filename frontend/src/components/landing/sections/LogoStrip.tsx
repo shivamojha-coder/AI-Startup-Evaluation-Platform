@@ -10,7 +10,7 @@ export const LogoStrip: React.FC = () => {
   ];
 
   return (
-    <section className="bg-[#0A0A0A] py-12 border-t border-[rgba(255,255,255,0.08)] overflow-hidden">
+    <section className="bg-transparent py-12 border-t border-[rgba(255,255,255,0.08)] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 text-center">
         <h3 className="text-[13px] font-medium text-[#9A9A9A] tracking-[0.05em] uppercase">
           Trusted by founders from

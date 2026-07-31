@@ -166,7 +166,7 @@ export const StartupDetail: React.FC = () => {
 
   if (authLoading || loading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-[#0A0A0A] min-h-screen">
+      <div className="flex flex-1 items-center justify-center bg-transparent min-h-screen">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FE9638] border-t-transparent"></div>
       </div>
     );
@@ -175,7 +175,7 @@ export const StartupDetail: React.FC = () => {
   if (!startup && !apiError) return null;
 
   return (
-    <div className="flex flex-1 flex-col bg-[#0A0A0A] p-6 sm:p-10 text-[#FAFAFA] relative min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+    <div className="flex flex-1 flex-col bg-transparent p-6 sm:p-10 text-[#FAFAFA] relative min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
       <div className="mx-auto w-full max-w-4xl space-y-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -592,7 +592,7 @@ export const StartupDetail: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0A0A0A]/85 backdrop-blur-sm p-4 animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent/85 backdrop-blur-sm p-4 animate-fadeIn">
           <div className="w-full max-w-md rounded-3xl bg-[#141414] p-8 border border-[rgba(255,255,255,0.12)] shadow-2xl space-y-4">
             <h3 className="text-xl font-bold text-[#FAFAFA]">Delete Startup</h3>
             <p className="text-sm text-[#9A9A9A] leading-relaxed">

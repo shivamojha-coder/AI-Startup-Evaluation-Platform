@@ -9,7 +9,7 @@ export const PressLogos: React.FC = () => {
   ];
 
   return (
-    <section className="bg-[#0A0A0A] py-14 border-t border-[rgba(255,255,255,0.08)]">
+    <section className="bg-transparent py-14 border-t border-[rgba(255,255,255,0.08)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h3 className="text-[13px] font-medium text-[#9A9A9A] tracking-[0.05em] uppercase mb-8">
           Featured in &amp; Backed by Research

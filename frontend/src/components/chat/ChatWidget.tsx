@@ -211,7 +211,7 @@ export const ChatWidget: React.FC = () => {
             className="w-full max-w-[1200px] h-[90vh] md:h-[85vh] flex flex-col md:flex-row bg-[#0F0F0F] rounded-2xl shadow-2xl border border-[rgba(255,255,255,0.1)] overflow-hidden"
           >
             {/* ─── Left Sidebar ─────────────────────────────────────────── */}
-            <div className="hidden md:flex flex-col w-[280px] bg-[#0A0A0A] border-r border-[rgba(255,255,255,0.07)]">
+            <div className="hidden md:flex flex-col w-[280px] bg-transparent border-r border-[rgba(255,255,255,0.07)]">
               {/* Branding */}
               <div className="p-5 border-b border-[rgba(255,255,255,0.07)]">
                 <div className="flex items-center gap-2.5 mb-1.5">
@@ -314,7 +314,7 @@ export const ChatWidget: React.FC = () => {
             </div>
 
             {/* ─── Main Chat Area ────────────────────────────────────────── */}
-            <div className="flex-1 flex flex-col bg-[#0A0A0A] relative">
+            <div className="flex-1 flex flex-col bg-transparent relative">
               {/* Header */}
               <div className="flex items-center justify-between p-4 bg-[#0F0F0F] border-b border-[rgba(255,255,255,0.07)]">
                 <div className="flex items-center gap-3">
@@ -408,7 +408,7 @@ export const ChatWidget: React.FC = () => {
                         }`}
                       >
                         {msg.role === 'ai' ? (
-                          <div className="prose prose-invert prose-sm md:prose-base max-w-none prose-p:my-1.5 prose-pre:bg-[#0A0A0A] prose-pre:border prose-pre:border-[rgba(255,255,255,0.05)] prose-table:border-collapse prose-th:border prose-th:border-[rgba(255,255,255,0.1)] prose-td:border prose-td:border-[rgba(255,255,255,0.08)] prose-th:p-2 prose-td:p-2">
+                          <div className="prose prose-invert prose-sm md:prose-base max-w-none prose-p:my-1.5 prose-pre:bg-transparent prose-pre:border prose-pre:border-[rgba(255,255,255,0.05)] prose-table:border-collapse prose-th:border prose-th:border-[rgba(255,255,255,0.1)] prose-td:border prose-td:border-[rgba(255,255,255,0.08)] prose-th:p-2 prose-td:p-2">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                           </div>
                         ) : (

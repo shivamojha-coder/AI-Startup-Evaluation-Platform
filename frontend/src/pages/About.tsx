@@ -15,7 +15,7 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <div className="pt-16 pb-24 bg-[#0A0A0A] text-[#FAFAFA] min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+    <div className="pt-16 pb-24 bg-transparent text-[#FAFAFA] min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
       {/* Hero */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 text-center border-b border-[rgba(255,255,255,0.08)]">
         <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold tracking-widest uppercase bg-[rgba(254,150,56,0.12)] text-[#FE9638] border border-[#FE9638]/30 mb-6">

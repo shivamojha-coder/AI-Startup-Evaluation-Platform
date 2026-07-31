@@ -52,7 +52,7 @@ export const TrustSection: React.FC = () => {
   ];
 
   return (
-    <section id="security" className="bg-[#0A0A0A] py-20 border-t border-[rgba(255,255,255,0.08)]">
+    <section id="security" className="bg-transparent py-20 border-t border-[rgba(255,255,255,0.08)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="ENTERPRISE SECURITY"

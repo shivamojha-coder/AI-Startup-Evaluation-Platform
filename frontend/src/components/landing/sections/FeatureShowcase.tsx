@@ -141,7 +141,7 @@ export const FeatureShowcase: React.FC = () => {
   ];
 
   return (
-    <section id="features" className="bg-[#0A0A0A] py-24 border-t border-[rgba(255,255,255,0.08)] relative">
+    <section id="features" className="bg-transparent py-24 border-t border-[rgba(255,255,255,0.08)] relative">
       {/* Anchors for direct navbar dropdown navigation */}
       <div id="summary-agent" className="absolute -top-24" />
       <div id="risk-analyzer" className="absolute -top-24" />

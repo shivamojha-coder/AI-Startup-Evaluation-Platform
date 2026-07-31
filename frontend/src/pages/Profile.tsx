@@ -74,7 +74,7 @@ export const Profile: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-[#0A0A0A] text-[#FAFAFA] min-h-screen">
+      <div className="flex flex-1 items-center justify-center bg-transparent text-[#FAFAFA] min-h-screen">
         <p className="text-[#9A9A9A]">Please log in to view your profile.</p>
       </div>
     );
@@ -147,7 +147,7 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 bg-[#0A0A0A] p-6 sm:p-10 text-[#FAFAFA] overflow-y-auto min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+    <div className="flex-1 bg-transparent p-6 sm:p-10 text-[#FAFAFA] overflow-y-auto min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Header Section */}
         <header className="relative overflow-hidden rounded-3xl bg-[#141414] p-8 border border-[rgba(255,255,255,0.08)] shadow-2xl">

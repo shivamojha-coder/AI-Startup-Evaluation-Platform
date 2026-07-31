@@ -99,7 +99,7 @@ export const StartupCreate: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-1 flex-col bg-[#0A0A0A] p-6 sm:p-10 text-[#FAFAFA] min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+    <div className="flex flex-1 flex-col bg-transparent p-6 sm:p-10 text-[#FAFAFA] min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
       <div className="mx-auto w-full max-w-2xl space-y-6">
         <div className="flex items-center gap-4">
           <Link

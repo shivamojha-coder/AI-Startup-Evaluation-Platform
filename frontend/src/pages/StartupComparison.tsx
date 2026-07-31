@@ -41,7 +41,7 @@ export const StartupComparison: React.FC = () => {
 
   if (authLoading || loading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-[#0A0A0A] text-[#FAFAFA] min-h-screen">
+      <div className="flex flex-1 items-center justify-center bg-transparent text-[#FAFAFA] min-h-screen">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FE9638] border-t-transparent"></div>
       </div>
     );
@@ -49,7 +49,7 @@ export const StartupComparison: React.FC = () => {
 
   if (error || startups.length === 0) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center bg-[#0A0A0A] p-8 text-[#FAFAFA] min-h-screen">
+      <div className="flex flex-1 flex-col items-center justify-center bg-transparent p-8 text-[#FAFAFA] min-h-screen">
         <div className="rounded-3xl bg-[#141414] border border-[rgba(255,255,255,0.08)] p-8 text-center max-w-md shadow-2xl">
           <p className="text-[#F87171] font-semibold mb-6">{error || "No startups selected for comparison."}</p>
           <button
@@ -73,7 +73,7 @@ export const StartupComparison: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-1 flex-col bg-[#0A0A0A] p-6 sm:p-10 text-[#FAFAFA] min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+    <div className="flex flex-1 flex-col bg-transparent p-6 sm:p-10 text-[#FAFAFA] min-h-screen selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
       <div className="mx-auto w-full max-w-7xl space-y-8">
         
         {/* Navigation & Header */}

@@ -36,7 +36,7 @@ export const ComingSoon: React.FC = () => {
   ];
 
   return (
-    <section className="bg-[#0A0A0A] py-24 border-t border-[rgba(255,255,255,0.08)] relative overflow-hidden">
+    <section className="bg-transparent py-24 border-t border-[rgba(255,255,255,0.08)] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           eyebrow="ROADMAP"

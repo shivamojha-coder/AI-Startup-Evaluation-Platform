@@ -24,7 +24,7 @@ const HeroMedia: React.FC = () => {
       onMouseLeave={() => setIsHovering(false)}
     >
       {/* Black base to prevent flash */}
-      <div className="absolute inset-0 bg-[#0a0a0a]" />
+      <div className="absolute inset-0 bg-transparent" />
 
       {/* Looping hero animation */}
       <LoopPlayer visible={!showDemo} />

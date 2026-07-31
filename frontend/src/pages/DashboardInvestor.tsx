@@ -5,6 +5,10 @@ import { getDealflow, getDealflowStats, requestMeeting, getInvestorMeetings, tog
 import type { DealflowStatsResponse } from "../api/startups";
 import type { DealflowResponse } from "../schemas/startup";
 import { SpotlightCard } from "../components/SpotlightCard";
+import { AnimatedBorder } from "../components/ui/AnimatedBorder";
+import { TextType } from "../components/ui/TextType";
+import { ShinyText } from "../components/ui/ShinyText";
+import { CountUp } from "../components/landing/ui/CountUp";
 import { User, MapPin, Heart, Calendar } from "lucide-react";
 
 export const DashboardInvestor: React.FC = () => {
@@ -158,7 +162,7 @@ export const DashboardInvestor: React.FC = () => {
 
   if (loading || dataLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-[#0A0A0A] min-h-screen">
+      <div className="flex flex-1 items-center justify-center bg-transparent min-h-screen">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FE9638] border-t-transparent"></div>
       </div>
     );
@@ -181,7 +185,7 @@ export const DashboardInvestor: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-1 flex-col bg-[#0A0A0A] p-6 sm:p-10 text-[#FAFAFA] min-h-screen relative">
+    <div className="flex flex-1 flex-col bg-transparent p-6 sm:p-10 text-[#FAFAFA] min-h-screen relative">
       <div className="mx-auto max-w-[1400px] w-full flex flex-col xl:flex-row gap-8 pb-20">
         
         {/* Main Content Area */}
@@ -209,28 +213,59 @@ export const DashboardInvestor: React.FC = () => {
           ) : (
             <div>
               <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#FAFAFA]">
-                Welcome back, {user.name?.split(' ')[0] || "Investor"} 👋
+                Welcome back,{" "}
+                <ShinyText 
+                  text={`${user.name?.split(' ')[0] || "Investor"} `}
+                  baseColor="#F97316"
+                  shineColor="#FFFFFF"
+                  speed={3}
+                  delay={2}
+                  spread={120}
+                  direction="left"
+                  yoyo={false}
+                  pauseOnHover={false}
+                  disabled={false}
+                />
               </h1>
               <p className="mt-2 text-sm text-[#9A9A9A]">
-                <strong className="text-[#FAFAFA]">{stats?.ready_for_review || 0} startups</strong> are ready for review. Last updated: Today.
+                <TextType 
+                  texts={[
+                    `${stats?.ready_for_review || 0} startups are ready for review.`,
+                    "Discover your next high-potential startup.",
+                    "AI has analyzed new investment opportunities.",
+                    "Your shortlist is waiting for review."
+                  ]}
+                  typingSpeed={50}
+                  deletingSpeed={30}
+                  pauseDuration={2200}
+                  initialDelay={500}
+                  loop={true}
+                  showCursor={true}
+                  hideCursorWhileTyping={false}
+                  cursor="|"
+                  cursorColor="#F97316"
+                  variableSpeed={{ min: 40, max: 65 }}
+                  startOnVisible={false}
+                  reverseMode={false}
+                />
               </p>
               
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
                 <div className="bg-[#141414] border border-[rgba(255,255,255,0.08)] rounded-2xl p-4 flex flex-col">
                   <span className="text-xs font-bold uppercase text-[#9A9A9A]">New Startups</span>
-                  <span className="text-2xl font-black text-[#FAFAFA] mt-1">{stats?.new_startups || 0}</span>
+                  <CountUp end={stats?.new_startups || 0} duration={2500} separator="" className="text-2xl font-black text-[#FAFAFA] mt-1" />
                 </div>
                 <div className="bg-[#141414] border border-[rgba(255,255,255,0.08)] rounded-2xl p-4 flex flex-col">
                   <span className="text-xs font-bold uppercase text-[#9A9A9A]">Ready for Review</span>
-                  <span className="text-2xl font-black text-[#FE9638] mt-1">{stats?.ready_for_review || 0}</span>
+                  <CountUp end={stats?.ready_for_review || 0} duration={2500} separator="" className="text-2xl font-black text-[#FE9638] mt-1" />
                 </div>
                 <div className="bg-[#141414] border border-[rgba(255,255,255,0.08)] rounded-2xl p-4 flex flex-col">
                   <span className="text-xs font-bold uppercase text-[#9A9A9A]">My Shortlist</span>
-                  <span className="text-2xl font-black text-[#FAFAFA] mt-1">{shortlistedIds.length || 0}</span>
+                  <CountUp end={shortlistedIds.length || 0} duration={2500} separator="" className="text-2xl font-black text-[#FAFAFA] mt-1" />
                 </div>
                 <div className="bg-[#141414] border border-[rgba(255,255,255,0.08)] rounded-2xl p-4 flex flex-col">
                   <span className="text-xs font-bold uppercase text-[#9A9A9A]">Meeting Requests</span>
-                  <span className="text-2xl font-black text-[#FAFAFA] mt-1">{stats?.meeting_requests || 0}</span>
+                  <CountUp end={stats?.meeting_requests || 0} duration={2500} separator="" className="text-2xl font-black text-[#FAFAFA] mt-1" />
                 </div>
               </div>
             </div>
@@ -284,6 +319,7 @@ export const DashboardInvestor: React.FC = () => {
                 onClick={() => navigate(`/investor/report/${startup.id}`)}
                 className="rounded-2xl bg-[#141414] border border-[rgba(255,255,255,0.08)] shadow-xl hover:border-[#FE9638]/50 p-5 transition-all relative flex flex-col group cursor-pointer hover:-translate-y-1"
               >
+                <AnimatedBorder />
                 {/* Header */}
                 <div className="flex items-start gap-4 mb-5">
                   <div className="w-16 h-16 rounded-2xl bg-[rgba(254,150,56,0.15)] border border-[#FE9638]/30 flex items-center justify-center font-bold text-2xl text-[#FE9638] overflow-hidden shrink-0">
@@ -323,7 +359,10 @@ export const DashboardInvestor: React.FC = () => {
                   <div className="flex justify-between items-end border-b border-[rgba(255,255,255,0.05)] pb-3">
                     <div>
                       <span className="block text-[10px] font-bold uppercase text-[#666]">Overall Score</span>
-                      <span className="text-2xl font-black text-[#FE9638]">{startup.ai_score?.overall || 0}<span className="text-sm text-[#666]">/100</span></span>
+                      <span className="text-2xl font-black text-[#FE9638]">
+                        <CountUp end={startup.ai_score?.overall || 0} duration={2500} separator="" className="" />
+                        <span className="text-sm text-[#666]">/100</span>
+                      </span>
                     </div>
                     <div className="text-right">
                       <span className="block text-[10px] font-bold uppercase text-[#666]">Asking</span>
@@ -334,19 +373,19 @@ export const DashboardInvestor: React.FC = () => {
                   <div className="grid grid-cols-4 gap-2 text-center">
                     <div>
                       <span className="block text-[9px] font-bold uppercase text-[#9A9A9A]">Market</span>
-                      <span className="text-sm font-semibold text-[#FAFAFA]">{startup.ai_score?.market || 0}</span>
+                      <CountUp end={startup.ai_score?.market || 0} duration={2500} separator="" className="text-sm font-semibold text-[#FAFAFA]" />
                     </div>
                     <div>
                       <span className="block text-[9px] font-bold uppercase text-[#9A9A9A]">Founder</span>
-                      <span className="text-sm font-semibold text-[#FAFAFA]">{startup.ai_score?.founder || 0}</span>
+                      <CountUp end={startup.ai_score?.founder || 0} duration={2500} separator="" className="text-sm font-semibold text-[#FAFAFA]" />
                     </div>
                     <div>
                       <span className="block text-[9px] font-bold uppercase text-[#9A9A9A]">Financial</span>
-                      <span className="text-sm font-semibold text-[#FAFAFA]">{startup.ai_score?.financial || 0}</span>
+                      <CountUp end={startup.ai_score?.financial || 0} duration={2500} separator="" className="text-sm font-semibold text-[#FAFAFA]" />
                     </div>
                     <div>
                       <span className="block text-[9px] font-bold uppercase text-[#9A9A9A]">Product</span>
-                      <span className="text-sm font-semibold text-[#FAFAFA]">{startup.ai_score?.product || 0}</span>
+                      <CountUp end={startup.ai_score?.product || 0} duration={2500} separator="" className="text-sm font-semibold text-[#FAFAFA]" />
                     </div>
                   </div>
                 </div>

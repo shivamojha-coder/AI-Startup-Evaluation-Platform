@@ -128,7 +128,7 @@ export const Login: React.FC = () => {
       : "";
 
   return (
-    <div className="bg-[#0a0a0a] h-screen w-screen overflow-hidden font-sans text-white flex items-center justify-center p-3 sm:p-4 lg:p-6 [perspective:1400px]">
+    <div className="bg-transparent h-screen w-screen overflow-hidden font-sans text-white flex items-center justify-center p-3 sm:p-4 lg:p-6 [perspective:1400px]">
       {/* Centered Large Card fitted to screen with 3D Flip Animation */}
       <div className={`max-w-[1100px] w-full h-full max-h-[680px] bg-[#111111] border border-[#1e1e1e] rounded-[16px] shadow-2xl overflow-hidden flex flex-col transition-all ${flipClass}`}>
         

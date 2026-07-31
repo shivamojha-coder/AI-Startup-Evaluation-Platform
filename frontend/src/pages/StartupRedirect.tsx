@@ -42,14 +42,14 @@ export const StartupRedirect: React.FC<{ toUpload?: boolean }> = ({ toUpload }) 
 
   if (error) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-[#0A0A0A] p-8 text-center text-[#F87171] min-h-screen">
+      <div className="flex flex-1 items-center justify-center bg-transparent p-8 text-center text-[#F87171] min-h-screen">
         <p className="font-bold text-sm bg-[rgba(248,113,113,0.12)] px-4 py-3 rounded-xl border border-[#F87171]/30">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-[#0A0A0A] min-h-screen">
+    <div className="flex flex-1 items-center justify-center bg-transparent min-h-screen">
       <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FE9638] border-t-transparent"></div>
     </div>
   );

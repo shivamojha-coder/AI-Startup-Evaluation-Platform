@@ -200,7 +200,7 @@ export const VerifyOTP: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-1 items-center justify-center px-4 py-16 bg-[#0A0A0A] min-h-screen">
+    <div className="flex flex-1 items-center justify-center px-4 py-16 bg-transparent min-h-screen">
       <div className="w-full max-w-[460px] rounded-3xl bg-[#141414] p-8 sm:p-10 border border-[rgba(255,255,255,0.08)] shadow-2xl">
         <div className="mb-8 text-center">
           <Link to="/" className="inline-flex items-center gap-1.5 mb-6 group">
