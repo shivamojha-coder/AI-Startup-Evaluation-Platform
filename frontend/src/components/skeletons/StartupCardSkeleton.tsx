@@ -42,11 +42,11 @@ export const StartupCardSkeleton: React.FC = () => {
       {/* Score Breakdown Grid */}
       <div className="mb-5 rounded-xl bg-[#1C1C1C] border border-[rgba(255,255,255,0.05)] p-4 flex flex-col gap-3">
         <div className="flex justify-between items-end border-b border-[rgba(255,255,255,0.05)] pb-3">
-          <div>
-            <Skeleton className="h-2 w-16 mb-2" />
-            <Skeleton className="h-8 w-20" />
+          <div className="flex flex-col items-center justify-center">
+            <Skeleton className="w-[64px] h-[64px] md:w-[68px] md:h-[68px] lg:w-[72px] lg:h-[72px] rounded-full mb-2" />
+            <Skeleton className="h-2 w-16" />
           </div>
-          <div className="text-right flex flex-col items-end">
+          <div className="flex flex-col items-end">
             <Skeleton className="h-2 w-12 mb-2" />
             <Skeleton className="h-6 w-24" />
           </div>

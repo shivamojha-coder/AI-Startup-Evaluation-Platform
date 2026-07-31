@@ -5,6 +5,8 @@ import { getStartup, getEvaluations, getEvaluationReport, type EvaluationReportR
 import type { StartupResponse } from "../schemas/startup"
 import ReactMarkdown from "react-markdown";
 import { useChatStore } from "../store/chatStore";
+import { motion, AnimatePresence } from "framer-motion";
+import { ReportSkeleton } from "../components/skeletons/ReportSkeleton";
 
 // Helper components for UI layout
 const SectionCard: React.FC<{ title: string; children: React.ReactNode; className?: string }> = ({ title, children, className = "" }) => (
@@ -232,47 +234,68 @@ export const InvestorReport: React.FC = () => {
     }
   };
 
-  if (authLoading || loading) {
-    return (
-      <div className="flex flex-1 items-center justify-center bg-transparent text-[#FAFAFA] min-h-screen">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#FE9638] border-t-transparent"></div>
-      </div>
-    );
-  }
-
-  if (error || !startup) {
-    return (
-      <div className="flex flex-1 flex-col items-center justify-center bg-transparent p-8 text-[#FAFAFA] min-h-screen">
-        <div className="rounded-3xl bg-[#141414] border border-[rgba(255,255,255,0.08)] p-8 text-center max-w-md shadow-2xl">
-          <p className="text-[#F87171] font-semibold mb-6">{error || "Startup not found"}</p>
-          <button onClick={() => navigate(-1)} className="inline-block rounded-xl bg-[#FE9638] px-6 py-2.5 text-sm font-bold text-[#0A0A0A]">Go Back</button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!report) {
-    return (
-      <div className="flex flex-1 flex-col items-center justify-center bg-transparent p-8 text-[#FAFAFA] min-h-screen">
-        <h2 className="text-2xl font-bold text-[#FAFAFA]">Report Pending</h2>
-        <p className="text-sm text-[#9A9A9A] mt-2">The AI evaluation for {startup.startup_name} is not complete.</p>
-      </div>
-    );
-  }
-
-  const { summary, risks, questions, scores } = report;
   const isFounder = user?.role === "founder";
+  const summary = report?.summary;
+  const risks = report?.risks || [];
+  const questions = report?.questions || [];
+  const scores = report?.scores || {} as any;
 
   // Generate some dummy claims based on summary text to demonstrate the USP if none exist
   // In a full implementation, `claim_verification_agent` extracts these and saves them to the report.
-  const dummyClaims = [
+  const dummyClaims = summary ? [
     { category: "Market", text: `Target market: ${summary.target_market?.substring(0, 100)}...` },
     { category: "Revenue", text: `Business model involves: ${summary.business_model?.substring(0, 100)}...` },
     { category: "Founder", text: "The founder has significant prior experience in this industry." }
-  ];
+  ] : [];
 
   return (
-    <div className="flex flex-1 bg-transparent text-[#FAFAFA] h-screen overflow-hidden selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+    <AnimatePresence mode="wait">
+      {authLoading || loading ? (
+        <motion.div
+          key="skeleton"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="w-full flex flex-1 flex-col"
+        >
+          <ReportSkeleton isFounder={isFounder} />
+        </motion.div>
+      ) : error || !startup ? (
+        <motion.div
+          key="error"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="flex flex-1 flex-col items-center justify-center bg-transparent p-8 text-[#FAFAFA] min-h-screen w-full"
+        >
+          <div className="rounded-3xl bg-[#141414] border border-[rgba(255,255,255,0.08)] p-8 text-center max-w-md shadow-2xl">
+            <p className="text-[#F87171] font-semibold mb-6">{error || "Startup not found"}</p>
+            <button onClick={() => navigate(-1)} className="inline-block rounded-xl bg-[#FE9638] px-6 py-2.5 text-sm font-bold text-[#0A0A0A]">Go Back</button>
+          </div>
+        </motion.div>
+      ) : !report ? (
+        <motion.div
+          key="pending"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="flex flex-1 flex-col items-center justify-center bg-transparent p-8 text-[#FAFAFA] min-h-screen w-full"
+        >
+          <h2 className="text-2xl font-bold text-[#FAFAFA]">Report Pending</h2>
+          <p className="text-sm text-[#9A9A9A] mt-2">The AI evaluation for {startup.startup_name} is not complete.</p>
+        </motion.div>
+      ) : (
+        <motion.div
+          key="content"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="w-full flex flex-1 flex-col"
+        >
+          <div className="flex flex-1 bg-transparent text-[#FAFAFA] h-screen overflow-hidden selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
       <div className="max-w-[1600px] w-full mx-auto flex flex-col lg:flex-row h-full">
         
         {/* Report Content */}
@@ -510,5 +533,8 @@ export const InvestorReport: React.FC = () => {
         </div>
       )}
     </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getDealflow, getDealflowStats, requestMeeting, getInvestorMeetings, toggleShortlistAPI, getShortlistedAPI } from "../api/startups";
@@ -9,9 +9,66 @@ import { AnimatedBorder } from "../components/ui/AnimatedBorder";
 import { TextType } from "../components/ui/TextType";
 import { ShinyText } from "../components/ui/ShinyText";
 import { CountUp } from "../components/landing/ui/CountUp";
-import { User, MapPin, Heart, Calendar } from "lucide-react";
+import { User, MapPin, Heart, Calendar, ArrowRight, Search, Briefcase, Layers3, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DashboardSkeleton } from "../components/skeletons/DashboardSkeleton";
+import { ScoreRing } from "../components/ui/ScoreRing";
+
+const FilterSelect = ({ value, onChange, options, placeholder, icon: Icon }: any) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div className="relative w-full" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full h-[52px] bg-[#1B1B1B] border rounded-[14px] px-4 flex items-center justify-between text-sm transition-all duration-180 ease-out cursor-pointer ${
+          isOpen ? "border-[#F97316] shadow-[0_0_0_4px_rgba(249,115,22,0.08)]" : "border-[rgba(255,255,255,0.08)] hover:border-[rgba(255,255,255,0.15)]"
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          {Icon && <Icon className="w-4 h-4 text-[#9A9A9A]" />}
+          <span className={value ? "text-[#FAFAFA]" : "text-[#9A9A9A]"}>
+            {value || placeholder}
+          </span>
+        </div>
+        <ChevronDown className={`w-4 h-4 text-[#9A9A9A] transition-transform duration-180 ${isOpen ? "rotate-180" : ""}`} />
+      </button>
+      
+      {isOpen && (
+        <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-[#1B1B1B] border border-[rgba(255,255,255,0.08)] rounded-[14px] shadow-xl py-1.5 z-50 max-h-60 overflow-y-auto">
+          <button 
+            className="w-full px-4 py-2 text-left text-sm text-[#FAFAFA] hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+            onClick={() => { onChange(""); setIsOpen(false); }}
+          >
+            All {placeholder}s
+          </button>
+          {options.map((opt: string) => (
+            <button
+              key={opt}
+              className={`w-full px-4 py-2 text-left text-sm transition-colors ${
+                value === opt ? "bg-[rgba(249,115,22,0.1)] text-[#FE9638]" : "text-[#FAFAFA] hover:bg-[rgba(255,255,255,0.05)]"
+              }`}
+              onClick={() => { onChange(opt); setIsOpen(false); }}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const DashboardInvestor: React.FC = () => {
   const { user, loading } = useAuth();
@@ -289,40 +346,43 @@ export const DashboardInvestor: React.FC = () => {
 
           {/* Search & Filters */}
           {location.hash !== '#shortlist' && location.hash !== '#meetings' && (
-            <div className="rounded-2xl bg-[#141414] border border-[rgba(255,255,255,0.08)] p-4 shadow-lg flex flex-col flex-wrap lg:flex-row gap-4">
-              <div className="flex-1 min-w-[200px] relative">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#9A9A9A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+            <div className="w-full rounded-[18px] bg-[#141414] border border-[rgba(255,255,255,0.06)] p-4 flex flex-col md:flex-row gap-4 items-center">
+              
+              <div className="relative w-full md:w-[75%] group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9A9A9A] group-hover:text-[#F97316] transition-colors duration-180" />
                 <input 
                   type="text" 
                   placeholder="Search startups, founders, industries..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#1C1C1C] border border-[rgba(255,255,255,0.08)] rounded-xl py-3 pl-10 pr-4 text-sm text-[#FAFAFA] placeholder-[#666] focus:outline-none focus:border-[#FE9638]/50 transition-colors"
+                  className="w-full h-[52px] bg-[#1B1B1B] border border-[rgba(255,255,255,0.08)] rounded-[14px] pl-12 pr-16 text-sm text-[#FAFAFA] placeholder-[#666] focus:outline-none focus:border-[#F97316] focus:shadow-[0_0_0_4px_rgba(249,115,22,0.08)] hover:border-[#F97316] hover:shadow-[0_0_12px_rgba(249,115,22,0.15)] transition-all duration-180 ease-out"
                 />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center h-6 px-2 rounded-md bg-[#141414] border border-[rgba(255,255,255,0.1)] text-[#9A9A9A] text-[10px] font-bold tracking-widest">
+                  CTRL K
+                </div>
               </div>
               
-              <div className="flex flex-wrap gap-3">
-                <select 
-                  value={industryFilter} 
-                  onChange={(e) => setIndustryFilter(e.target.value)}
-                  className="bg-[#1C1C1C] border border-[rgba(255,255,255,0.08)] rounded-xl py-3 px-3 text-xs sm:text-sm text-[#FAFAFA] focus:outline-none focus:border-[#FE9638]/50"
-                >
-                  <option value="">Industry Γû╝</option>
-                  {industries.map(ind => <option key={ind} value={ind}>{ind}</option>)}
-                </select>
-                
-                <select 
-                  value={stageFilter} 
-                  onChange={(e) => setStageFilter(e.target.value)}
-                  className="bg-[#1C1C1C] border border-[rgba(255,255,255,0.08)] rounded-xl py-3 px-3 text-xs sm:text-sm text-[#FAFAFA] focus:outline-none focus:border-[#FE9638]/50"
-                >
-                  <option value="">Stage Γû╝</option>
-                  {stages.map(stg => <option key={stg} value={stg}>{stg}</option>)}
-                </select>
-
+              <div className="w-full md:w-[25%] flex gap-4">
+                <div className="flex-1">
+                  <FilterSelect 
+                    value={industryFilter} 
+                    onChange={setIndustryFilter} 
+                    options={industries} 
+                    placeholder="Industry" 
+                    icon={Briefcase} 
+                  />
+                </div>
+                <div className="flex-1">
+                  <FilterSelect 
+                    value={stageFilter} 
+                    onChange={setStageFilter} 
+                    options={stages} 
+                    placeholder="Stage" 
+                    icon={Layers3} 
+                  />
+                </div>
               </div>
+
             </div>
           )}
 
@@ -352,7 +412,7 @@ export const DashboardInvestor: React.FC = () => {
                         )}
                         {startup.founder_name}
                       </span>
-                      <span>ΓÇó</span>
+                      <span>&bull;</span>
                       <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {startup.location}</span>
                     </p>
                     <div className="flex flex-wrap gap-2 mt-3">
@@ -374,11 +434,7 @@ export const DashboardInvestor: React.FC = () => {
                 <div className="mb-5 rounded-xl bg-[#1C1C1C] border border-[rgba(255,255,255,0.05)] p-4 flex flex-col gap-3">
                   <div className="flex justify-between items-end border-b border-[rgba(255,255,255,0.05)] pb-3">
                     <div>
-                      <span className="block text-[10px] font-bold uppercase text-[#666]">Overall Score</span>
-                      <span className="text-2xl font-black text-[#FE9638]">
-                        <CountUp end={startup.ai_score?.overall || 0} duration={2500} separator="" className="" />
-                        <span className="text-sm text-[#666]">/100</span>
-                      </span>
+                      <ScoreRing score={startup.ai_score?.overall || 0} max={100} size={72} strokeWidth={8} />
                     </div>
                     <div className="text-right">
                       <span className="block text-[10px] font-bold uppercase text-[#666]">Asking</span>
@@ -462,7 +518,7 @@ export const DashboardInvestor: React.FC = () => {
                   </div>
                   
                   <button className="flex items-center gap-2 text-sm font-bold text-[#FE9638] group-hover:translate-x-1 transition-transform">
-                    Review Startup <span className="text-lg">ΓåÆ</span>
+                    Review Startup <ArrowRight className="w-5 h-5" />
                   </button>
                 </div>
               </SpotlightCard>
@@ -557,7 +613,7 @@ export const DashboardInvestor: React.FC = () => {
               </button>
               <button
                 onClick={handleSubmitMeeting}
-                disabled={!meetingDate || !meetingTime || !meetingLink || meetingSubmitting}
+                disabled={!meetingDate || !meetingTime || !meetingAgenda || meetingSubmitting}
                 className="flex-1 py-3 rounded-xl bg-[#FE9638] text-[#0A0A0A] font-bold text-sm hover:bg-[#E28528] transition-colors shadow-lg shadow-[#FE9638]/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {meetingSubmitting ? "Sending..." : "Send Request"}
