@@ -23,9 +23,9 @@ export const PaginationInfo: React.FC<PaginationInfoProps> = ({
   const end = Math.min(currentPage * limit, total);
 
   return (
-    <div className={cn("text-sm text-[#9A9A9A]", className)} {...props}>
-      Showing <span className="font-medium text-[#FAFAFA]">{start}</span> to <span className="font-medium text-[#FAFAFA]">{end}</span> of{" "}
-      <span className="font-medium text-[#FAFAFA]">{total}</span> startups
+    <div className={cn("text-sm text-[#9A9A9A] tracking-wide", className)} {...props}>
+      Showing <span className="font-semibold text-[#F97316]">{start}–{end}</span> of{" "}
+      <span className="font-semibold text-white">{total}</span> Startups
     </div>
   );
 };

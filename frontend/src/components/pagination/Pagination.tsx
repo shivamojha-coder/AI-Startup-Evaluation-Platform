@@ -72,40 +72,37 @@ export const Pagination: React.FC<PaginationProps> = ({
       className={cn("mx-auto flex w-full justify-center", className)}
       {...props}
     >
-      <ul className="flex flex-row items-center gap-1">
+      <ul className="flex flex-row items-center gap-2 flex-wrap justify-center">
         <li>
           <PaginationButton
-            className="w-auto px-3 gap-1"
+            className="w-auto px-4 gap-2 mr-2"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
             aria-label="Go to previous page"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4 transition-transform duration-220 group-hover:-translate-x-[2px]" />
             <span className="hidden sm:inline">Previous</span>
           </PaginationButton>
         </li>
 
-        {paginationRange.map((pageNumber, idx) => {
-          if (pageNumber === "...") {
+        {paginationRange.map((page, index) => {
+          if (page === "...") {
             return (
-              <li key={`ellipsis-${idx}`}>
-                <span className="flex h-9 w-9 items-center justify-center text-[#9A9A9A]">
+              <li key={`dots-${index}`}>
+                <span className="flex h-10 min-w-[2.5rem] items-center justify-center text-[#666]">
                   <MoreHorizontal className="h-4 w-4" />
-                  <span className="sr-only">More pages</span>
                 </span>
               </li>
             );
           }
-
           return (
-            <li key={pageNumber}>
+            <li key={page}>
               <PaginationButton
-                active={pageNumber === currentPage}
-                onClick={() => onPageChange(pageNumber as number)}
-                aria-label={pageNumber === currentPage ? `Page ${pageNumber}` : `Go to page ${pageNumber}`}
-                aria-current={pageNumber === currentPage ? "page" : undefined}
+                active={currentPage === page}
+                onClick={() => onPageChange(page as number)}
+                aria-current={currentPage === page ? "page" : undefined}
               >
-                {pageNumber}
+                {page}
               </PaginationButton>
             </li>
           );
@@ -113,13 +110,13 @@ export const Pagination: React.FC<PaginationProps> = ({
 
         <li>
           <PaginationButton
-            className="w-auto px-3 gap-1"
+            className="w-auto px-4 gap-2 ml-2"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
             aria-label="Go to next page"
           >
             <span className="hidden sm:inline">Next</span>
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4 transition-transform duration-220 group-hover:translate-x-[2px]" />
           </PaginationButton>
         </li>
       </ul>

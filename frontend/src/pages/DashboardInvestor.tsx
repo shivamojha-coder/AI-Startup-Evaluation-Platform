@@ -571,16 +571,17 @@ export const DashboardInvestor: React.FC = () => {
 
                 {/* Pagination */}
                 {!isFetchingPage && totalPages > 0 && (
-                  <div className="mt-8 mb-4 flex flex-col items-center justify-center gap-4">
-                    <Pagination
-                      currentPage={page}
-                      totalPages={totalPages}
-                      onPageChange={handlePageChange}
-                    />
+                  <div className="mt-10 mb-6 flex flex-col items-center justify-center w-full max-w-4xl mx-auto bg-[#171717] border border-[#2A2A2A] rounded-[16px] px-6 py-8 shadow-2xl">
                     <PaginationInfo
                       currentPage={page}
                       limit={limit}
                       total={totalStartups}
+                    />
+                    <Pagination
+                      currentPage={page}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                      className="mt-6"
                     />
                   </div>
                 )}
