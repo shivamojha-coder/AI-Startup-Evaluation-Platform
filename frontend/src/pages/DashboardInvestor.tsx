@@ -245,7 +245,17 @@ export const DashboardInvestor: React.FC = () => {
       prev.set("page", newPage.toString());
       return prev;
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    setTimeout(() => {
+      const searchSection = document.getElementById('search-filter-section');
+      const gridSection = document.getElementById('startup-grid');
+      
+      if (searchSection) {
+        searchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (gridSection) {
+        gridSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 0);
   };
 
   const handleSearchChange = (q: string) => {
@@ -383,7 +393,7 @@ export const DashboardInvestor: React.FC = () => {
 
                 {/* Search & Filters */}
                 {location.hash !== '#shortlist' && location.hash !== '#meetings' && (
-                  <div className="w-full rounded-[18px] bg-[#141414] border border-[rgba(255,255,255,0.06)] p-4 flex flex-col md:flex-row gap-4 items-center">
+                  <div id="search-filter-section" className="w-full rounded-[18px] bg-[#141414] border border-[rgba(255,255,255,0.06)] p-4 flex flex-col md:flex-row gap-4 items-center scroll-mt-6">
 
                     <div className="relative w-full md:w-[75%] group">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9A9A9A] group-hover:text-[#F97316] transition-colors duration-180" />
@@ -424,7 +434,7 @@ export const DashboardInvestor: React.FC = () => {
                 )}
 
                 {/* Startups Grid */}
-                <div className="grid gap-6 md:grid-cols-2">
+                <div id="startup-grid" className="grid gap-6 md:grid-cols-2 scroll-mt-6">
                   {isFetchingPage ? (
                     [...Array(limit)].map((_, i) => <StartupCardSkeleton key={i} />)
                   ) : startups.map(startup => (
@@ -571,17 +581,17 @@ export const DashboardInvestor: React.FC = () => {
 
                 {/* Pagination */}
                 {!isFetchingPage && totalPages > 0 && (
-                  <div className="mt-10 mb-6 flex flex-col items-center justify-center w-full max-w-4xl mx-auto bg-[#171717] border border-[#2A2A2A] rounded-[16px] px-6 py-8 shadow-2xl">
+                  <div className="py-7 flex flex-col items-center justify-center w-full gap-3.5">
                     <PaginationInfo
                       currentPage={page}
                       limit={limit}
                       total={totalStartups}
+                      className="w-full text-center"
                     />
                     <Pagination
                       currentPage={page}
                       totalPages={totalPages}
                       onPageChange={handlePageChange}
-                      className="mt-6"
                     />
                   </div>
                 )}

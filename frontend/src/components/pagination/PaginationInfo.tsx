@@ -23,9 +23,12 @@ export const PaginationInfo: React.FC<PaginationInfoProps> = ({
   const end = Math.min(currentPage * limit, total);
 
   return (
-    <div className={cn("text-sm text-[#9A9A9A] tracking-wide", className)} {...props}>
-      Showing <span className="font-semibold text-[#F97316]">{start}–{end}</span> of{" "}
-      <span className="font-semibold text-white">{total}</span> Startups
+    <div className={cn("text-[13px] md:text-[14px] text-[rgba(255,255,255,0.55)] font-medium tracking-wide", className)} {...props}>
+      {total > limit ? (
+        <>Showing <span className="text-[#F97316]">{start}–{end}</span> of <span className="text-[#F97316]">{total}</span> Startups</>
+      ) : (
+        <>Showing <span className="text-[#F97316]">{total}</span> of <span className="text-[#F97316]">{total}</span> Startups</>
+      )}
     </div>
   );
 };

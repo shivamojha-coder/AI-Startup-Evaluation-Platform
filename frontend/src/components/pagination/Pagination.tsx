@@ -1,6 +1,7 @@
 import React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { PaginationButton } from "./PaginationButton";
+import { motion } from "framer-motion";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -46,7 +47,10 @@ export const Pagination: React.FC<PaginationProps> = ({
 
     if (shouldShowLeftDots && !shouldShowRightDots) {
       const rightItemCount = 3 + 2 * siblingCount;
-      const rightRange = Array.from({ length: rightItemCount }, (_, i) => totalPages - rightItemCount + i + 1);
+      const rightRange = Array.from(
+        { length: rightItemCount },
+        (_, i) => totalPages - rightItemCount + i + 1
+      );
       return [firstPageIndex, "...", ...rightRange];
     }
 
@@ -72,31 +76,31 @@ export const Pagination: React.FC<PaginationProps> = ({
       className={cn("mx-auto flex w-full justify-center", className)}
       {...props}
     >
-      <ul className="flex flex-row items-center gap-2 flex-wrap justify-center">
-        <li>
+      <motion.ul layout className="flex flex-row items-center gap-2.5 flex-wrap justify-center">
+        <motion.li layout>
           <PaginationButton
             className="w-auto px-4 gap-2 mr-2"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
             aria-label="Go to previous page"
           >
-            <ChevronLeft className="h-4 w-4 transition-transform duration-220 group-hover:-translate-x-[2px]" />
+            <ChevronLeft className="h-4 w-4" />
             <span className="hidden sm:inline">Previous</span>
           </PaginationButton>
-        </li>
+        </motion.li>
 
         {paginationRange.map((page, index) => {
           if (page === "...") {
             return (
-              <li key={`dots-${index}`}>
-                <span className="flex h-10 min-w-[2.5rem] items-center justify-center text-[#666]">
+              <motion.li layout key={`dots-${index}`}>
+                <span className="flex h-10 min-w-[2.75rem] items-center justify-center text-[rgba(255,255,255,0.4)]">
                   <MoreHorizontal className="h-4 w-4" />
                 </span>
-              </li>
+              </motion.li>
             );
           }
           return (
-            <li key={page}>
+            <motion.li layout key={page}>
               <PaginationButton
                 active={currentPage === page}
                 onClick={() => onPageChange(page as number)}
@@ -104,11 +108,11 @@ export const Pagination: React.FC<PaginationProps> = ({
               >
                 {page}
               </PaginationButton>
-            </li>
+            </motion.li>
           );
         })}
 
-        <li>
+        <motion.li layout>
           <PaginationButton
             className="w-auto px-4 gap-2 ml-2"
             onClick={() => onPageChange(currentPage + 1)}
@@ -116,10 +120,10 @@ export const Pagination: React.FC<PaginationProps> = ({
             aria-label="Go to next page"
           >
             <span className="hidden sm:inline">Next</span>
-            <ChevronRight className="h-4 w-4 transition-transform duration-220 group-hover:translate-x-[2px]" />
+            <ChevronRight className="h-4 w-4" />
           </PaginationButton>
-        </li>
-      </ul>
+        </motion.li>
+      </motion.ul>
     </nav>
   );
 };
