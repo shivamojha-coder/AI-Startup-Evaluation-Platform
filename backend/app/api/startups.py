@@ -63,6 +63,11 @@ def list_startups(current_user: dict = Depends(require_role("founder"))):  # noq
 def list_dealflow(
     industry: str | None = None,
     stage: str | None = None,
+    search: str | None = None,
+    page: int = 1,
+    limit: int = 12,
+    shortlisted_ids: str | None = None,
+    meeting_ids: str | None = None,
     current_user: dict = Depends(require_role("investor")),  # noqa: B008
 ):
     try:
@@ -147,7 +152,46 @@ def list_dealflow(
 
             startups.append(row)
             
-        return startups
+        # Extract unique industries and stages before applying complex filters
+        industries = list(set([s.get("industry") for s in startups if s.get("industry")]))
+        stages = list(set([s.get("stage") for s in startups if s.get("stage")]))
+        
+        # Apply search filter
+        if search:
+            q = search.lower()
+            startups = [
+                s for s in startups 
+                if (s.get("startup_name") and q in s.get("startup_name").lower()) or
+                   (s.get("industry") and q in s.get("industry").lower()) or
+                   (s.get("description") and q in s.get("description").lower()) or
+                   (s.get("stage") and q in s.get("stage").lower()) or
+                   (s.get("founder_name") and q in s.get("founder_name").lower())
+            ]
+            
+        # Apply shortlist and meetings filters
+        if shortlisted_ids:
+            s_ids = set(shortlisted_ids.split(","))
+            startups = [s for s in startups if s["id"] in s_ids]
+            
+        if meeting_ids:
+            m_ids = set(meeting_ids.split(","))
+            startups = [s for s in startups if s["id"] in m_ids]
+            
+        total = len(startups)
+        
+        # Pagination
+        start_idx = (page - 1) * limit
+        end_idx = start_idx + limit
+        paginated_startups = startups[start_idx:end_idx]
+
+        return {
+            "data": paginated_startups,
+            "total": total,
+            "industries": industries,
+            "stages": stages,
+            "page": page,
+            "limit": limit
+        }
     except Exception as e:
         logger.error(f"Error fetching dealflow: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch dealflow") from e

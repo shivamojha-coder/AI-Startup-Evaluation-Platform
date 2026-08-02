@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AnnouncementBar } from "../ui/AnnouncementBar";
 import { useAuth } from "../../../context/AuthContext";
-
+import { ShinyText } from "../../ui/ShinyText";
 export const Navbar: React.FC = () => {
   const { user } = useAuth();
   const dashboardHref = user?.role === "investor" ? "/investor/dashboard" : "/founder/dashboard";
@@ -159,7 +159,9 @@ export const Navbar: React.FC = () => {
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="flex items-center gap-1.5 group cursor-pointer"
           >
-            <span className="font-bold text-[19px] text-[#FAFAFA] tracking-tight">VentureAI</span>
+            <span className="font-bold text-[19px] text-[#FAFAFA] tracking-tight">
+              <ShinyText text="VentureAI" baseColor="rgba(255,255,255,0.85)" shineColor="#FFFFFF" speed={5} />
+            </span>
             <span className="w-2.5 h-2.5 rounded-full bg-[#FE9638] inline-block" />
           </Link>
 

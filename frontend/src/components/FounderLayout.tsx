@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ShinyText } from "./ui/ShinyText";
 import { 
   LayoutDashboard, 
   Building2, 
@@ -45,7 +46,9 @@ export const FounderLayout: React.FC<{ children: React.ReactNode }> = ({ childre
             <svg className="w-6 h-6 text-[#f97316]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 9l6 6 6-6" />
             </svg>
-            <span className="text-lg font-bold tracking-tight text-white">VentureAI</span>
+            <span className="text-lg font-bold tracking-tight text-white">
+              <ShinyText text="VentureAI" baseColor="rgba(255,255,255,0.85)" shineColor="#FFFFFF" speed={5} />
+            </span>
           </Link>
         </div>
 

@@ -399,8 +399,36 @@ export async function getDealflowStats(): Promise<DealflowStatsResponse> {
   }
   return response.json();
 }
-export async function getDealflow(): Promise<any[]> {
-  const response = await fetch(`${API_URL}/startups/dealflow`, {
+export interface DealflowPaginatedResponse {
+  data: any[];
+  total: number;
+  industries: string[];
+  stages: string[];
+  page: number;
+  limit: number;
+}
+
+export async function getDealflow(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  industry?: string;
+  stage?: string;
+  shortlisted_ids?: string;
+  meeting_ids?: string;
+}): Promise<DealflowPaginatedResponse> {
+  const query = new URLSearchParams();
+  if (params) {
+    if (params.page) query.append("page", params.page.toString());
+    if (params.limit) query.append("limit", params.limit.toString());
+    if (params.search) query.append("search", params.search);
+    if (params.industry) query.append("industry", params.industry);
+    if (params.stage) query.append("stage", params.stage);
+    if (params.shortlisted_ids) query.append("shortlisted_ids", params.shortlisted_ids);
+    if (params.meeting_ids) query.append("meeting_ids", params.meeting_ids);
+  }
+  const queryString = query.toString() ? `?${query.toString()}` : "";
+  const response = await fetch(`${API_URL}/startups/dealflow${queryString}`, {
     headers: getAuthHeaders(),
     credentials: "include",
   });

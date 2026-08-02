@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ShinyText } from "./ui/ShinyText";
 import { 
   LayoutDashboard, 
   Search, 
@@ -41,7 +42,7 @@ export const InvestorLayout: React.FC<{ children: React.ReactNode }> = ({ childr
               <span className="text-sm font-black">V</span>
             </div>
             <span className="text-lg font-black tracking-tight text-[#FAFAFA]">
-              Venture<span className="text-[#FE9638]">AI</span>
+              <ShinyText text="Venture" baseColor="rgba(250,250,250,0.85)" shineColor="#FFFFFF" speed={5} /><ShinyText text="AI" baseColor="#FE9638" shineColor="#FFFFFF" speed={5} />
             </span>
           </Link>
         </div>

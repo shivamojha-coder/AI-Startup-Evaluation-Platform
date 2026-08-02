@@ -304,9 +304,17 @@ export const InvestorReport: React.FC = () => {
           {/* Header & Actions */}
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div>
-              <button onClick={() => navigate(-1)} className="text-sm font-bold text-[#9A9A9A] hover:text-[#FE9638] mb-4 flex items-center gap-2">
-                ← {isFounder ? "Back to My Startup" : "Back to Dealflow"}
-              </button>
+              <motion.button 
+                whileHover={{ scale: 1.02, x: -2 }} 
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate(-1)} 
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] text-xs font-bold text-[#9A9A9A] hover:text-[#FAFAFA] hover:bg-[rgba(255,255,255,0.08)] transition-colors mb-4 cursor-pointer"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                {isFounder ? "Back to My Startup" : "Back to Dealflow"}
+              </motion.button>
               <h1 className="text-4xl font-extrabold tracking-tight text-[#FAFAFA]">{startup.startup_name}</h1>
               <div className="flex gap-2 mt-3">
                 <span className="rounded-lg bg-[rgba(255,255,255,0.08)] px-3 py-1 text-xs font-bold uppercase text-[#FAFAFA]">{startup.industry || "No Industry"}</span>

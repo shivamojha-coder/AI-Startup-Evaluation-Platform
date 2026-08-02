@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ShinyText } from "../components/ui/ShinyText";
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -135,7 +136,9 @@ export const Login: React.FC = () => {
         {/* Top Bar spanning full card width */}
         <div className="w-full border-b border-[#1e1e1e] px-6 py-3.5 flex items-center justify-between shrink-0 bg-[#111111] z-20">
           <Link to="/" className="flex items-center group">
-            <span className="font-bold text-lg text-white tracking-tight">VentureAI</span>
+            <span className="font-bold text-lg text-white tracking-tight">
+              <ShinyText text="VentureAI" baseColor="rgba(255,255,255,0.85)" shineColor="#FFFFFF" speed={5} />
+            </span>
             <span className="w-2 h-2 rounded-full bg-[#f97316] inline-block ml-1" />
           </Link>
           <div className="text-sm text-[#6b7280]">
