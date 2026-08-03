@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { 
   getStartups, 
@@ -146,6 +147,50 @@ export const DashboardFounder: React.FC = () => {
   };
   const reportStatusVal = getReportStatus();
 
+  const checklist = [
+    { id: 'fname', done: !!user?.name?.trim() },
+    { id: 'fheadline', done: !!user?.headline?.trim() },
+    { id: 'fbio', done: !!user?.bio?.trim() },
+    { id: 'flinkedin', done: !!user?.linkedin_url?.trim() },
+    { id: 'fphoto', done: !!user?.profile_photo_url },
+    { id: 'sname', done: !!currentStartup?.startup_name },
+    { id: 'stagline', done: !!currentStartup?.tagline },
+    { id: 'sdesc', done: !!currentStartup?.description },
+    { id: 'sindustry', done: !!currentStartup?.industry },
+    { id: 'sstage', done: !!currentStartup?.stage },
+    { id: 'swebsite', done: !!currentStartup?.website },
+    { id: 'slogo', done: !!currentStartup?.logo_url },
+    { id: 'steam', done: !!currentStartup?.team_size },
+    { id: 'sfunding', done: !!currentStartup?.funding_raised },
+    { id: 'slinkedin', done: !!currentStartup?.linkedin_url },
+    { id: 'sdeck', done: documents.length > 0 },
+  ];
+  const firstIncompleteId = checklist.find(item => !item.done)?.id;
+  const remainingTasksCount = checklist.filter(item => !item.done).length;
+
+  const getDotState = (id: string, isCompleted: boolean) => {
+    if (isCompleted) return 'completed';
+    if (id === firstIncompleteId) return 'current';
+    return 'incomplete';
+  };
+
+  const DotIndicator = ({ id, isCompleted }: { id: string; isCompleted: boolean }) => {
+    const state = getDotState(id, isCompleted);
+    const bgColor = state === 'completed' ? 'bg-[#22c55e]' : state === 'current' ? 'bg-[#f97316]' : 'bg-[#4b5563]';
+    return (
+      <div className="flex items-center justify-center w-4 h-4">
+        <div className={`w-[9px] h-[9px] rounded-full transition-transform duration-300 hover:scale-[1.15] ${bgColor}`} />
+      </div>
+    );
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
+
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center min-h-[600px] text-white">
@@ -161,12 +206,30 @@ export const DashboardFounder: React.FC = () => {
     <div className="w-full max-w-[1340px] mx-auto text-white selection:bg-[rgba(249,115,22,0.15)] selection:text-[#f97316]">
       
       {/* TOP BAR (Main area) */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
-        <div>
+      <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-2">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex flex-col"
+        >
           <h1 className="text-[28px] font-bold text-white tracking-tight leading-tight">
-            Welcome back, {userName} 👋
+            {getGreeting()} <span className="font-bold">{userName}</span> 👋
           </h1>
-          <div className="flex items-center gap-2 mt-1">
+          <p className="text-base text-[#d1d5db] mt-2 font-medium">
+            Your startup is <span className="text-[#f97316] font-bold">{overallProgress}%</span> investment ready.
+          </p>
+          {remainingTasksCount > 0 ? (
+            <p className="text-sm text-[#9ca3af] mt-1">
+              Complete {remainingTasksCount} remaining tasks to unlock your full investor profile.
+            </p>
+          ) : (
+            <p className="text-sm text-[#22c55e] mt-1 font-medium">
+              Your profile is complete! You are ready to connect with investors.
+            </p>
+          )}
+
+          <div className="flex items-center gap-2 mt-4">
             <span className="text-[#6b7280] text-sm">Managing:</span>
             {startups.length > 0 ? (
               <select
@@ -189,9 +252,9 @@ export const DashboardFounder: React.FC = () => {
               </Link>
             )}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-3.5 mt-2 sm:mt-0">
           {/* Notification bell icon */}
           <button className="p-2.5 rounded-full bg-[#111111] border border-[#1e1e1e] text-[#9ca3af] hover:text-white transition-all relative cursor-pointer">
             <Bell className="w-5 h-5" />
@@ -220,39 +283,37 @@ export const DashboardFounder: React.FC = () => {
         {/* Card 1 — Profile Completeness */}
         <div 
           onClick={() => setShowChecklist(!showChecklist)}
-          className="bg-[#111111] border border-[#1e1e1e] rounded-[12px] p-5 flex items-center justify-between hover:bg-white/5 transition-all duration-150 cursor-pointer group"
+          className="bg-[#111111] border border-[#1e1e1e] rounded-[12px] p-5 flex flex-col items-center justify-center hover:bg-white/5 transition-all duration-150 cursor-pointer group relative min-h-[140px]"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-[48px] h-[48px] rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0 text-[#f97316]">
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" stroke="#2a2a2a" strokeWidth="2.5" />
-                <path 
-                  d="M12 2a10 10 0 0 1 10 10" 
-                  stroke="currentColor" 
-                  strokeWidth="2.5" 
-                  strokeLinecap="round" 
-                  strokeDasharray="100"
-                  strokeDashoffset={100 - overallProgress}
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="text-[10px] font-medium tracking-wider text-[#9ca3af] uppercase">
-                PROFILE COMPLETENESS
-              </p>
-              <p className="text-[32px] font-bold text-white leading-none my-1">
-                {completenessVal}
-              </p>
-              <p className="text-xs">
-                {overallProgress === 100 ? (
-                  <span className="text-[#22c55e] font-medium">100% Profile Completed!</span>
-                ) : (
-                  <span className="text-[#f97316] font-medium hover:underline">Click to view checklist</span>
-                )}
-              </p>
-            </div>
+          <div className="relative w-[72px] h-[72px] flex items-center justify-center mb-3">
+             {/* Background circle */}
+             <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+               <circle cx="50" cy="50" r="42" stroke="#2a2a2a" strokeWidth="8" fill="none" />
+             </svg>
+             {/* Animated Progress Circle */}
+             <motion.svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+               <motion.circle 
+                  cx="50" 
+                  cy="50" 
+                  r="42" 
+                  stroke="#f97316" 
+                  strokeWidth="8" 
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeDasharray={263.89}
+                  initial={{ strokeDashoffset: 263.89 }}
+                  whileInView={{ strokeDashoffset: 263.89 * (1 - overallProgress / 100) }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+               />
+             </motion.svg>
+             <span className="text-lg font-bold text-white">{overallProgress}%</span>
           </div>
-          {showChecklist ? <ChevronUp className="w-5 h-5 text-[#6b7280]" /> : <ChevronDown className="w-5 h-5 text-[#6b7280] group-hover:text-white transition-colors" />}
+          <span className="text-sm font-semibold text-white">Application Ready</span>
+          
+          <div className="absolute top-4 right-4">
+            {showChecklist ? <ChevronUp className="w-5 h-5 text-[#6b7280]" /> : <ChevronDown className="w-5 h-5 text-[#6b7280] group-hover:text-white transition-colors" />}
+          </div>
         </div>
 
         {/* Card 2 — Documents Uploaded */}
@@ -337,9 +398,7 @@ export const DashboardFounder: React.FC = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                   <div className="flex items-center gap-2.5">
-                    <span className={user?.name?.trim() ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                      {user?.name?.trim() ? "✔" : "❌"}
-                    </span>
+                    <DotIndicator id="fname" isCompleted={!!user?.name?.trim()} />
                     <span className={user?.name?.trim() ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>Full Name</span>
                   </div>
                   {!user?.name?.trim() && (
@@ -349,9 +408,7 @@ export const DashboardFounder: React.FC = () => {
 
                 <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                   <div className="flex items-center gap-2.5">
-                    <span className={user?.headline?.trim() ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                      {user?.headline?.trim() ? "✔" : "❌"}
-                    </span>
+                    <DotIndicator id="fheadline" isCompleted={!!user?.headline?.trim()} />
                     <span className={user?.headline?.trim() ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>Professional Headline</span>
                   </div>
                   {!user?.headline?.trim() && (
@@ -361,9 +418,7 @@ export const DashboardFounder: React.FC = () => {
 
                 <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                   <div className="flex items-center gap-2.5">
-                    <span className={user?.bio?.trim() ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                      {user?.bio?.trim() ? "✔" : "❌"}
-                    </span>
+                    <DotIndicator id="fbio" isCompleted={!!user?.bio?.trim()} />
                     <span className={user?.bio?.trim() ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>Professional Bio</span>
                   </div>
                   {!user?.bio?.trim() && (
@@ -373,9 +428,7 @@ export const DashboardFounder: React.FC = () => {
 
                 <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                   <div className="flex items-center gap-2.5">
-                    <span className={user?.linkedin_url?.trim() ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                      {user?.linkedin_url?.trim() ? "✔" : "❌"}
-                    </span>
+                    <DotIndicator id="flinkedin" isCompleted={!!user?.linkedin_url?.trim()} />
                     <span className={user?.linkedin_url?.trim() ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>LinkedIn Profile</span>
                   </div>
                   {!user?.linkedin_url?.trim() && (
@@ -385,9 +438,7 @@ export const DashboardFounder: React.FC = () => {
 
                 <div className="flex items-center justify-between text-sm py-1">
                   <div className="flex items-center gap-2.5">
-                    <span className={user?.profile_photo_url ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                      {user?.profile_photo_url ? "✔" : "❌"}
-                    </span>
+                    <DotIndicator id="fphoto" isCompleted={!!user?.profile_photo_url} />
                     <span className={user?.profile_photo_url ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>Profile Photo</span>
                   </div>
                   {!user?.profile_photo_url && (
@@ -413,18 +464,14 @@ export const DashboardFounder: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.startup_name ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.startup_name ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="sname" isCompleted={!!currentStartup.startup_name} />
                       <span className="text-xs text-white">Startup Name</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.tagline ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.tagline ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="stagline" isCompleted={!!currentStartup.tagline} />
                       <span className="text-xs text-white">One-line Tagline</span>
                     </div>
                     {!currentStartup.tagline && (
@@ -434,36 +481,28 @@ export const DashboardFounder: React.FC = () => {
 
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.description ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.description ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="sdesc" isCompleted={!!currentStartup.description} />
                       <span className="text-xs text-white">Description</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.industry ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.industry ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="sindustry" isCompleted={!!currentStartup.industry} />
                       <span className="text-xs text-white">Industry</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.stage ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.stage ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="sstage" isCompleted={!!currentStartup.stage} />
                       <span className="text-xs text-white">Stage</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.website ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.website ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="swebsite" isCompleted={!!currentStartup.website} />
                       <span className="text-xs text-white">Website</span>
                     </div>
                     {!currentStartup.website && (
@@ -473,9 +512,7 @@ export const DashboardFounder: React.FC = () => {
 
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.logo_url ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.logo_url ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="slogo" isCompleted={!!currentStartup.logo_url} />
                       <span className="text-xs text-white">Startup Logo</span>
                     </div>
                     {!currentStartup.logo_url && (
@@ -485,9 +522,7 @@ export const DashboardFounder: React.FC = () => {
 
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.team_size ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.team_size ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="steam" isCompleted={!!currentStartup.team_size} />
                       <span className="text-xs text-white">Team Size</span>
                     </div>
                     {!currentStartup.team_size && (
@@ -497,9 +532,7 @@ export const DashboardFounder: React.FC = () => {
 
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.funding_raised ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.funding_raised ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="sfunding" isCompleted={!!currentStartup.funding_raised} />
                       <span className="text-xs text-white">Funding</span>
                     </div>
                     {!currentStartup.funding_raised && (
@@ -509,9 +542,7 @@ export const DashboardFounder: React.FC = () => {
 
                   <div className="flex items-center justify-between text-sm py-1 border-b border-[rgba(255,255,255,0.02)]">
                     <div className="flex items-center gap-2.5">
-                      <span className={currentStartup.linkedin_url ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {currentStartup.linkedin_url ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="slinkedin" isCompleted={!!currentStartup.linkedin_url} />
                       <span className="text-xs text-white">Company LinkedIn</span>
                     </div>
                     {!currentStartup.linkedin_url && (
@@ -521,9 +552,7 @@ export const DashboardFounder: React.FC = () => {
 
                   <div className="flex items-center justify-between text-sm py-1 col-span-2">
                     <div className="flex items-center gap-2.5">
-                      <span className={documents.length > 0 ? "text-emerald-500 font-bold" : "text-[#ef4444] font-bold"}>
-                        {documents.length > 0 ? "✔" : "❌"}
-                      </span>
+                      <DotIndicator id="sdeck" isCompleted={documents.length > 0} />
                       <span className="text-xs text-white">Upload Pitch Deck</span>
                     </div>
                     {documents.length === 0 && (
