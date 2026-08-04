@@ -191,6 +191,8 @@ export const DashboardFounder: React.FC = () => {
     return "Good Evening";
   };
 
+  const ctaClass = "h-[28px] px-[12px] bg-[#f97316] text-white text-[12px] font-semibold rounded-[8px] flex items-center justify-center transition-all duration-[180ms] hover:bg-[#fb923c] hover:-translate-y-[1px] hover:shadow-[0_0_12px_rgba(249,115,22,0.4)] active:scale-[0.98] cursor-pointer whitespace-nowrap";
+
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center min-h-[600px] text-white">
@@ -402,7 +404,7 @@ export const DashboardFounder: React.FC = () => {
                     <span className={user?.name?.trim() ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>Full Name</span>
                   </div>
                   {!user?.name?.trim() && (
-                    <Link to="/founder/profile" className="text-xs font-bold text-[#f97316] hover:underline">Add Name</Link>
+                    <Link to="/founder/profile" className={ctaClass}>Add</Link>
                   )}
                 </div>
 
@@ -412,7 +414,7 @@ export const DashboardFounder: React.FC = () => {
                     <span className={user?.headline?.trim() ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>Professional Headline</span>
                   </div>
                   {!user?.headline?.trim() && (
-                    <Link to="/founder/profile" className="text-xs font-bold text-[#f97316] hover:underline">Add Headline</Link>
+                    <Link to="/founder/profile" className={ctaClass}>Add</Link>
                   )}
                 </div>
 
@@ -422,7 +424,7 @@ export const DashboardFounder: React.FC = () => {
                     <span className={user?.bio?.trim() ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>Professional Bio</span>
                   </div>
                   {!user?.bio?.trim() && (
-                    <Link to="/founder/profile" className="text-xs font-bold text-[#f97316] hover:underline">Add Bio</Link>
+                    <Link to="/founder/profile" className={ctaClass}>Add</Link>
                   )}
                 </div>
 
@@ -432,7 +434,7 @@ export const DashboardFounder: React.FC = () => {
                     <span className={user?.linkedin_url?.trim() ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>LinkedIn Profile</span>
                   </div>
                   {!user?.linkedin_url?.trim() && (
-                    <Link to="/founder/profile" className="text-xs font-bold text-[#f97316] hover:underline">Add LinkedIn</Link>
+                    <Link to="/founder/profile" className={ctaClass}>Add</Link>
                   )}
                 </div>
 
@@ -442,7 +444,7 @@ export const DashboardFounder: React.FC = () => {
                     <span className={user?.profile_photo_url ? "text-[#9ca3af] font-medium" : "text-white font-medium"}>Profile Photo</span>
                   </div>
                   {!user?.profile_photo_url && (
-                    <Link to="/founder/profile" className="text-xs font-bold text-[#f97316] hover:underline">Upload Photo</Link>
+                    <Link to="/founder/profile" className={ctaClass}>Add</Link>
                   )}
                 </div>
               </div>
@@ -475,7 +477,7 @@ export const DashboardFounder: React.FC = () => {
                       <span className="text-xs text-white">One-line Tagline</span>
                     </div>
                     {!currentStartup.tagline && (
-                      <Link to={`/founder/startups/${selectedStartupId}`} className="text-[10px] font-bold text-[#f97316] hover:underline">Add</Link>
+                      <Link to={`/founder/startups/${selectedStartupId}`} className={ctaClass}>Add</Link>
                     )}
                   </div>
 
@@ -506,7 +508,7 @@ export const DashboardFounder: React.FC = () => {
                       <span className="text-xs text-white">Website</span>
                     </div>
                     {!currentStartup.website && (
-                      <Link to={`/founder/startups/${selectedStartupId}`} className="text-[10px] font-bold text-[#f97316] hover:underline">Add</Link>
+                      <Link to={`/founder/startups/${selectedStartupId}`} className={ctaClass}>Add</Link>
                     )}
                   </div>
 
@@ -516,7 +518,7 @@ export const DashboardFounder: React.FC = () => {
                       <span className="text-xs text-white">Startup Logo</span>
                     </div>
                     {!currentStartup.logo_url && (
-                      <Link to={`/founder/startups/${selectedStartupId}`} className="text-[10px] font-bold text-[#f97316] hover:underline">Add Logo</Link>
+                      <Link to={`/founder/startups/${selectedStartupId}`} className={ctaClass}>Add</Link>
                     )}
                   </div>
 
@@ -526,7 +528,7 @@ export const DashboardFounder: React.FC = () => {
                       <span className="text-xs text-white">Team Size</span>
                     </div>
                     {!currentStartup.team_size && (
-                      <Link to={`/founder/startups/${selectedStartupId}`} className="text-[10px] font-bold text-[#f97316] hover:underline">Add</Link>
+                      <Link to={`/founder/startups/${selectedStartupId}`} className={ctaClass}>Add</Link>
                     )}
                   </div>
 
@@ -536,7 +538,7 @@ export const DashboardFounder: React.FC = () => {
                       <span className="text-xs text-white">Funding</span>
                     </div>
                     {!currentStartup.funding_raised && (
-                      <Link to={`/founder/startups/${selectedStartupId}`} className="text-[10px] font-bold text-[#f97316] hover:underline">Add</Link>
+                      <Link to={`/founder/startups/${selectedStartupId}`} className={ctaClass}>Add</Link>
                     )}
                   </div>
 
@@ -546,7 +548,7 @@ export const DashboardFounder: React.FC = () => {
                       <span className="text-xs text-white">Company LinkedIn</span>
                     </div>
                     {!currentStartup.linkedin_url && (
-                      <Link to={`/founder/startups/${selectedStartupId}`} className="text-[10px] font-bold text-[#f97316] hover:underline">Add</Link>
+                      <Link to={`/founder/startups/${selectedStartupId}`} className={ctaClass}>Add</Link>
                     )}
                   </div>
 
@@ -556,7 +558,7 @@ export const DashboardFounder: React.FC = () => {
                       <span className="text-xs text-white">Upload Pitch Deck</span>
                     </div>
                     {documents.length === 0 && (
-                      <Link to={`/founder/startups/${selectedStartupId}/documents`} className="text-xs font-bold text-[#f97316] hover:underline">Upload PDF</Link>
+                      <Link to={`/founder/startups/${selectedStartupId}/documents`} className={ctaClass}>Add</Link>
                     )}
                   </div>
                 </div>
