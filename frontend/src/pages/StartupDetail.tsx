@@ -15,6 +15,7 @@ import { DocumentCard } from "../components/startup/DocumentCard";
 import { InsightCard } from "../components/startup/InsightCard";
 import { TimelineCard } from "../components/startup/TimelineCard";
 import { ActionCard } from "../components/startup/ActionCard";
+import { EditStartupModal } from "../components/startup/EditStartupModal";
 
 export const StartupDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +26,7 @@ export const StartupDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("overview");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== "founder")) {
@@ -50,8 +52,11 @@ export const StartupDetail: React.FC = () => {
   };
 
   const handleEdit = () => {
-    // Placeholder for Edit Modal or Slide-over drawer
-    alert("Edit Modal to be implemented");
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSuccess = () => {
+    fetchData();
   };
 
   if (authLoading || loading) {
@@ -70,6 +75,15 @@ export const StartupDetail: React.FC = () => {
         <div className="bg-red-500/10 border-b border-red-500/20 text-red-400 p-4 text-center text-sm font-medium">
           {apiError}
         </div>
+      )}
+
+      {startup && (
+        <EditStartupModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          startup={startup}
+          onSuccess={handleEditSuccess}
+        />
       )}
 
       <div className="mx-auto w-full max-w-[1400px] px-6 py-8 md:py-12 space-y-10">
