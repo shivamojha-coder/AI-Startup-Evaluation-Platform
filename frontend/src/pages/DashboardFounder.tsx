@@ -216,7 +216,7 @@ export const DashboardFounder: React.FC = () => {
           className="flex flex-col"
         >
           <h1 className="text-[28px] font-bold text-white tracking-tight leading-tight">
-            {getGreeting()} <span className="font-bold">{userName}</span> 👋
+            {getGreeting()} <span className="font-bold">{userName}</span>
           </h1>
           <p className="text-base text-[#d1d5db] mt-2 font-medium">
             Your startup is <span className="text-[#f97316] font-bold">{overallProgress}%</span> investment ready.
@@ -390,7 +390,7 @@ export const DashboardFounder: React.FC = () => {
               <div className="flex justify-between items-center">
                 <h3 className="font-bold text-sm text-[#f97316] uppercase tracking-wider flex items-center gap-1.5">
                   <User className="w-4 h-4" />
-                  <span>👤 Founder Profile</span>
+                  <span>Founder Profile</span>
                 </h3>
                 <span className="text-xs font-extrabold bg-[rgba(249,115,22,0.1)] px-2 py-0.5 rounded text-[#f97316]">
                   {founderProgress}%
@@ -455,7 +455,7 @@ export const DashboardFounder: React.FC = () => {
               <div className="flex justify-between items-center">
                 <h3 className="font-bold text-sm text-[#f97316] uppercase tracking-wider flex items-center gap-1.5">
                   <Briefcase className="w-4 h-4" />
-                  <span>🚀 Startup Profile</span>
+                  <span>Startup Profile</span>
                 </h3>
                 <span className="text-xs font-extrabold bg-[rgba(249,115,22,0.1)] px-2 py-0.5 rounded text-[#f97316]">
                   {startupProgress}%
