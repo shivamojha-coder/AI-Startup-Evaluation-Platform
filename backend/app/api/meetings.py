@@ -23,7 +23,7 @@ def request_meeting(
 ):
     try:
         # First, find the founder of this startup
-        startup_resp = supabase_client.table("startups").select("founder_id").eq("id", str(meeting_in.startup_id)).execute()
+        startup_resp = supabase_service_client.table("startups").select("founder_id").eq("id", str(meeting_in.startup_id)).execute()
         startup_data: Any = startup_resp.data
         if not startup_data:
             raise HTTPException(status_code=404, detail="Startup not found")
@@ -31,7 +31,7 @@ def request_meeting(
         founder_id = startup_data[0]["founder_id"]
 
         # Check if request already exists
-        existing_resp = supabase_client.table("meeting_requests").select("*").eq("investor_id", str(current_user["id"])).eq("startup_id", str(meeting_in.startup_id)).execute()
+        existing_resp = supabase_service_client.table("meeting_requests").select("*").eq("investor_id", str(current_user["id"])).eq("startup_id", str(meeting_in.startup_id)).execute()
         
         if existing_resp.data:
             existing_req: Any = existing_resp.data[0]
@@ -90,7 +90,7 @@ def request_meeting(
 @router.get("/investor")
 def list_investor_meetings(current_user: dict = Depends(require_role("investor"))):
     try:
-        response = supabase_client.table("meeting_requests").select("*, startups(*)").eq("investor_id", str(current_user["id"])).execute()
+        response = supabase_service_client.table("meeting_requests").select("*, startups(*)").eq("investor_id", str(current_user["id"])).execute()
         return response.data
     except Exception as e:
         logger.error(f"Error listing investor meetings: {e}")
@@ -101,7 +101,7 @@ def list_investor_meetings(current_user: dict = Depends(require_role("investor")
 def list_founder_meetings(current_user: dict = Depends(require_role("founder"))):
     try:
         # We also want to return investor details (name) and startup details
-        response = supabase_client.table("meeting_requests").select("*, startups(startup_name), users!meeting_requests_investor_id_fkey(name, profile_photo_url)").eq("founder_id", str(current_user["id"])).execute()
+        response = supabase_service_client.table("meeting_requests").select("*, startups(startup_name), users!meeting_requests_investor_id_fkey(name, profile_photo_url)").eq("founder_id", str(current_user["id"])).execute()
         return response.data
     except Exception as e:
         logger.error(f"Error listing founder meetings: {e}")

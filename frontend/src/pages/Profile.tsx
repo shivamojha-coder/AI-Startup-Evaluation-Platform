@@ -245,10 +245,6 @@ export const Profile: React.FC = () => {
                   <User className="h-5 w-5 text-[#FE9638]" />
                   Profile Overview
                 </div>
-                <button className="flex items-center gap-2 rounded-xl bg-transparent border border-[rgba(255,255,255,0.12)] hover:border-[#FE9638]/50 px-4 py-2 text-xs font-bold transition-all group">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-[#9A9A9A] group-hover:text-[#FE9638] transition-colors"><path d="M11.5 15H7a4 4 0 0 0-4 4v2" /><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /><circle cx="10" cy="7" r="4" /></svg>
-                  <span className="text-[#FAFAFA] group-hover:text-[#FE9638] transition-colors">Edit Public Profile</span>
-                </button>
               </div>
 
               <div className="flex flex-col lg:flex-row gap-8 relative z-10">
@@ -402,6 +398,20 @@ export const Profile: React.FC = () => {
                       <Phone className="h-4 w-4" />
                     </div>
                     <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#1C1C1C] border border-[rgba(255,255,255,0.08)] text-sm text-[#FAFAFA] placeholder-[#444444] focus:outline-none focus:border-[#FE9638] transition-all" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-[#9A9A9A] mb-2">LinkedIn URL</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#666666]">
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                        <rect x="2" y="9" width="4" height="12" />
+                        <circle cx="4" cy="4" r="2" />
+                      </svg>
+                    </div>
+                    <input type="url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} placeholder="https://linkedin.com/in/username" className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#1C1C1C] border border-[rgba(255,255,255,0.08)] text-sm text-[#FAFAFA] placeholder-[#444444] focus:outline-none focus:border-[#FE9638] transition-all" />
                   </div>
                 </div>
 

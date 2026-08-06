@@ -31,7 +31,7 @@ def create_startup(
         data = startup_in.model_dump()
         data["founder_id"] = str(current_user["id"])
 
-        response = supabase_client.table("startups").insert(data).execute()
+        response = supabase_service_client.table("startups").insert(data).execute()
         resp_data: Any = response.data
         if not resp_data:
             raise HTTPException(status_code=500, detail="Failed to create startup")
@@ -47,7 +47,7 @@ def create_startup(
 def list_startups(current_user: dict = Depends(require_role("founder"))):  # noqa: B008
     try:
         response = (
-            supabase_client.table("startups")
+            supabase_service_client.table("startups")
             .select("*")
             .eq("founder_id", str(current_user["id"]))
             .execute()
@@ -212,11 +212,11 @@ def get_dealflow_stats(current_user: dict = Depends(require_role("investor"))):
         completed_startups = set(e["startup_id"] for e in (completed_data or []))
         
         # Get shortlisted count for current user
-        shortlist_resp = supabase_client.table("investor_actions").select("id").eq("investor_id", str(current_user["id"])).eq("action", "shortlist").execute()
+        shortlist_resp = supabase_service_client.table("investor_actions").select("id").eq("investor_id", str(current_user["id"])).eq("action", "shortlist").execute()
         shortlist_data: Any = shortlist_resp.data
         
         # Get meeting requests count for current user
-        meetings_resp = supabase_client.table("meeting_requests").select("id").eq("investor_id", str(current_user["id"])).execute()
+        meetings_resp = supabase_service_client.table("meeting_requests").select("id").eq("investor_id", str(current_user["id"])).execute()
         meetings_data: Any = meetings_resp.data
         
         return {
@@ -233,7 +233,7 @@ def get_dealflow_stats(current_user: dict = Depends(require_role("investor"))):
 @router.get("/shortlisted")
 def get_shortlisted_startups(current_user: dict = Depends(require_role("investor"))):
     try:
-        response = supabase_client.table("investor_actions").select("startup_id").eq("investor_id", str(current_user["id"])).eq("action", "shortlist").execute()
+        response = supabase_service_client.table("investor_actions").select("startup_id").eq("investor_id", str(current_user["id"])).eq("action", "shortlist").execute()
         resp_data: Any = response.data
         return [row["startup_id"] for row in (resp_data or [])]
     except Exception as e:
@@ -252,24 +252,24 @@ def compare_startups(
             return []
             
         # Get startups
-        response = supabase_client.table("startups").select("*").in_("id", startup_ids).execute()
+        response = supabase_service_client.table("startups").select("*").in_("id", startup_ids).execute()
         startups: Any = response.data
         
         # Get latest completed evaluations and scores
         results = []
         for startup in startups:
-            eval_resp = supabase_client.table("evaluations").select("id").eq("startup_id", startup["id"]).eq("status", "completed").order("version", desc=True).limit(1).execute()
+            eval_resp = supabase_service_client.table("evaluations").select("id").eq("startup_id", startup["id"]).eq("status", "completed").order("version", desc=True).limit(1).execute()
             eval_data: Any = eval_resp.data
             if eval_data:
                 eval_id = eval_data[0]["id"]
-                score_resp = supabase_client.table("scores").select("startup_score, market_opportunity").eq("evaluation_id", eval_id).execute()
+                score_resp = supabase_service_client.table("scores").select("startup_score, market_opportunity").eq("evaluation_id", eval_id).execute()
                 score_data: Any = score_resp.data
                 scores = score_data[0] if score_data and isinstance(score_data, list) else {}
                 if not isinstance(scores, dict):
                     scores = {}
                 
                 # Fetch summary for RAG or overview
-                summary_resp = supabase_client.table("executive_summaries").select("target_market").eq("evaluation_id", eval_id).execute()
+                summary_resp = supabase_service_client.table("executive_summaries").select("target_market").eq("evaluation_id", eval_id).execute()
                 summary_data: Any = summary_resp.data
                 summary = summary_data[0] if summary_data and isinstance(summary_data, list) else {}
                 if not isinstance(summary, dict):
@@ -318,12 +318,12 @@ def get_startup(id: UUID, current_user: dict = Depends(get_current_user)):  # no
 def toggle_shortlist(id: UUID, current_user: dict = Depends(require_role("investor"))):
     try:
         # Check if already shortlisted
-        existing_resp = supabase_client.table("investor_actions").select("id").eq("investor_id", str(current_user["id"])).eq("startup_id", str(id)).eq("action", "shortlist").execute()
+        existing_resp = supabase_service_client.table("investor_actions").select("id").eq("investor_id", str(current_user["id"])).eq("startup_id", str(id)).eq("action", "shortlist").execute()
         existing_data: Any = existing_resp.data
         
         if existing_data:
             # Remove from shortlist
-            supabase_client.table("investor_actions").delete().eq("id", existing_data[0]["id"]).execute()
+            supabase_service_client.table("investor_actions").delete().eq("id", existing_data[0]["id"]).execute()
             return {"status": "removed"}
         else:
             # Add to shortlist
@@ -332,7 +332,7 @@ def toggle_shortlist(id: UUID, current_user: dict = Depends(require_role("invest
                 "startup_id": str(id),
                 "action": "shortlist"
             }
-            supabase_client.table("investor_actions").insert(data).execute()
+            supabase_service_client.table("investor_actions").insert(data).execute()
             return {"status": "added"}
     except Exception as e:
         logger.error(f"Error toggling shortlist: {e}")
@@ -348,7 +348,7 @@ def update_startup(
 ):
     try:
         # First verify ownership
-        response = supabase_client.table("startups").select("founder_id").eq("id", str(id)).execute()
+        response = supabase_service_client.table("startups").select("founder_id").eq("id", str(id)).execute()
         resp_data: Any = response.data
         if not resp_data:
             raise HTTPException(status_code=404, detail="Startup not found")
@@ -360,12 +360,12 @@ def update_startup(
         update_data = startup_in.model_dump(exclude_unset=True)
         if not update_data:
             # nothing to update, just return the existing
-            existing_resp = supabase_client.table("startups").select("*").eq("id", str(id)).execute()
+            existing_resp = supabase_service_client.table("startups").select("*").eq("id", str(id)).execute()
             existing_data: Any = existing_resp.data
             return existing_data[0]
 
         update_response = (
-            supabase_client.table("startups").update(update_data).eq("id", str(id)).execute()
+            supabase_service_client.table("startups").update(update_data).eq("id", str(id)).execute()
         )
         updated_data: Any = update_response.data
         if not updated_data:
@@ -383,7 +383,7 @@ def update_startup(
 def delete_startup(id: UUID, current_user: dict = Depends(require_role("founder"))):  # noqa: B008
     try:
         # First verify ownership
-        response = supabase_client.table("startups").select("founder_id").eq("id", str(id)).execute()
+        response = supabase_service_client.table("startups").select("founder_id").eq("id", str(id)).execute()
         resp_data: Any = response.data
         if not resp_data:
             raise HTTPException(status_code=404, detail="Startup not found")
@@ -391,7 +391,7 @@ def delete_startup(id: UUID, current_user: dict = Depends(require_role("founder"
         if resp_data[0]["founder_id"] != str(current_user["id"]):
             raise HTTPException(status_code=404, detail="Startup not found")
 
-        supabase_client.table("startups").delete().eq("id", str(id)).execute()
+        supabase_service_client.table("startups").delete().eq("id", str(id)).execute()
         return None
     except HTTPException:
         raise
@@ -409,7 +409,7 @@ def upload_pitch_deck(
 ):
     try:
         # 1. Verify ownership
-        response = supabase_client.table("startups").select("founder_id").eq("id", str(id)).execute()
+        response = supabase_service_client.table("startups").select("founder_id").eq("id", str(id)).execute()
         resp_data: Any = response.data
         if not resp_data or resp_data[0]["founder_id"] != str(current_user["id"]):
             raise HTTPException(status_code=404, detail="Startup not found")
@@ -434,7 +434,7 @@ def upload_pitch_deck(
 
         # 3. DB Bookkeeping
         # Get max version
-        eval_resp = supabase_client.table("evaluations").select("version").eq("startup_id", str(id)).order("version", desc=True).limit(1).execute()
+        eval_resp = supabase_service_client.table("evaluations").select("version").eq("startup_id", str(id)).order("version", desc=True).limit(1).execute()
         eval_data: Any = eval_resp.data
         max_version = eval_data[0]["version"] if eval_data else 0
         new_version = max_version + 1
@@ -495,7 +495,7 @@ def get_evaluation_status(
     """
     try:
         eval_resp = (
-            supabase_client.table("evaluations")
+            supabase_service_client.table("evaluations")
             .select("id, status, startup_id")
             .eq("id", str(evaluation_id))
             .execute()
@@ -508,7 +508,7 @@ def get_evaluation_status(
 
         # Fetch extraction_status from pdf_metadata
         pdf_meta_resp = (
-            supabase_client.table("pdf_metadata")
+            supabase_service_client.table("pdf_metadata")
             .select("extraction_status")
             .eq("evaluation_id", str(evaluation_id))
             .execute()
@@ -518,7 +518,7 @@ def get_evaluation_status(
 
         # Verify the caller has permission to view this evaluation's startup
         startup_resp = (
-            supabase_client.table("startups")
+            supabase_service_client.table("startups")
             .select("founder_id")
             .eq("id", evaluation["startup_id"])
             .execute()
@@ -554,7 +554,7 @@ def list_startup_evaluations(
 ):
     try:
         # Verify permissions: founders only see their own, investors see any
-        response = supabase_client.table("startups").select("founder_id").eq("id", str(id)).execute()
+        response = supabase_service_client.table("startups").select("founder_id").eq("id", str(id)).execute()
         resp_data: Any = response.data
         if not resp_data:
             raise HTTPException(status_code=404, detail="Startup not found")
@@ -566,7 +566,7 @@ def list_startup_evaluations(
             raise HTTPException(status_code=403, detail="Not enough permissions")
 
         evals_resp = (
-            supabase_client.table("evaluations")
+            supabase_service_client.table("evaluations")
             .select("*")
             .eq("startup_id", str(id))
             .order("version", desc=True)
@@ -590,7 +590,7 @@ def list_startup_documents(
 ):
     try:
         # Verify permissions: founders only see their own, investors see any
-        response = supabase_client.table("startups").select("founder_id").eq("id", str(id)).execute()
+        response = supabase_service_client.table("startups").select("founder_id").eq("id", str(id)).execute()
         resp_data: Any = response.data
         if not resp_data:
             raise HTTPException(status_code=404, detail="Startup not found")
@@ -601,7 +601,7 @@ def list_startup_documents(
         elif current_user["role"] not in ["founder", "investor", "admin"]:
             raise HTTPException(status_code=403, detail="Not enough permissions")
 
-        query = supabase_client.table("pdf_metadata").select(
+        query = supabase_service_client.table("pdf_metadata").select(
             "*, evaluations!inner(version, status, startup_id)"
         ).eq("evaluations.startup_id", str(id))
 
@@ -646,13 +646,13 @@ def delete_document(
 ):
     try:
         # 1. Verify ownership of parent startup
-        response = supabase_client.table("startups").select("founder_id").eq("id", str(id)).execute()
+        response = supabase_service_client.table("startups").select("founder_id").eq("id", str(id)).execute()
         resp_data: Any = response.data
         if not resp_data or resp_data[0]["founder_id"] != str(current_user["id"]):
             raise HTTPException(status_code=404, detail="Startup not found")
 
         # 2. Get the evaluation ID and verify it belongs to this startup
-        meta_resp = supabase_client.table("pdf_metadata").select("*, evaluations!inner(startup_id)").eq("id", str(pdf_metadata_id)).execute()
+        meta_resp = supabase_service_client.table("pdf_metadata").select("*, evaluations!inner(startup_id)").eq("id", str(pdf_metadata_id)).execute()
         meta_data: Any = meta_resp.data
         if not meta_data or meta_data[0]["evaluations"]["startup_id"] != str(id):
             raise HTTPException(status_code=404, detail="Document not found")
@@ -696,13 +696,13 @@ def get_evaluation_report(
 ):
     try:
         # Check evaluation and verify permissions
-        eval_resp = supabase_client.table("evaluations").select("id, startup_id, status").eq("id", str(evaluation_id)).execute()
+        eval_resp = supabase_service_client.table("evaluations").select("id, startup_id, status").eq("id", str(evaluation_id)).execute()
         eval_data: Any = eval_resp.data
         if not eval_data:
             raise HTTPException(status_code=404, detail="Evaluation not found")
         evaluation = eval_data[0]
 
-        startup_resp = supabase_client.table("startups").select("founder_id").eq("id", evaluation["startup_id"]).execute()
+        startup_resp = supabase_service_client.table("startups").select("founder_id").eq("id", evaluation["startup_id"]).execute()
         startup_data: Any = startup_resp.data
         if not startup_data:
             raise HTTPException(status_code=404, detail="Evaluation not found")
@@ -714,20 +714,20 @@ def get_evaluation_report(
             raise HTTPException(status_code=403, detail="Not enough permissions")
 
         # Fetch summaries
-        summary_resp = supabase_client.table("executive_summaries").select("*").eq("evaluation_id", str(evaluation_id)).execute()
+        summary_resp = supabase_service_client.table("executive_summaries").select("*").eq("evaluation_id", str(evaluation_id)).execute()
         summary_data: Any = summary_resp.data
         summary_obj = summary_data[0] if summary_data else {}
 
         # Fetch risks
-        risks_resp = supabase_client.table("identified_risks").select("*").eq("evaluation_id", str(evaluation_id)).execute()
+        risks_resp = supabase_service_client.table("identified_risks").select("*").eq("evaluation_id", str(evaluation_id)).execute()
         risks_data: Any = risks_resp.data or []
 
         # Fetch questions
-        questions_resp = supabase_client.table("investor_questions").select("*").eq("evaluation_id", str(evaluation_id)).execute()
+        questions_resp = supabase_service_client.table("investor_questions").select("*").eq("evaluation_id", str(evaluation_id)).execute()
         questions_data: Any = questions_resp.data or []
 
         # Fetch scores
-        scores_resp = supabase_client.table("scores").select("*").eq("evaluation_id", str(evaluation_id)).execute()
+        scores_resp = supabase_service_client.table("scores").select("*").eq("evaluation_id", str(evaluation_id)).execute()
         scores_data: Any = scores_resp.data
         scores_obj = scores_data[0] if scores_data else {}
 

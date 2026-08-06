@@ -2,7 +2,7 @@
 
 from fastapi import Depends, HTTPException, Request, status
 
-from app.core.supabase_client import supabase_client, validate_user_jwt
+from app.core.supabase_client import supabase_client, supabase_service_client, validate_user_jwt
 
 
 async def get_current_user(request: Request) -> dict:
@@ -49,7 +49,7 @@ async def get_current_user(request: Request) -> dict:
     # Fetch corresponding database record in public.users to get correct role and name
     try:
         response = (
-            supabase_client.table("users")
+            supabase_service_client.table("users")
             .select("id", "email", "name", "role", "bio", "headline", "profile_photo_url", "linkedin_url")
             .eq("id", auth_user.id)
             .execute()

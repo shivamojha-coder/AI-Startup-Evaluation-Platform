@@ -190,7 +190,7 @@ async def login(login_data: UserLogin, response: Response):
     # Query the user profile from the database to ensure sync
     try:
         db_res = (
-            supabase_client.table("users")
+            supabase_service_client.table("users")
             .select("id", "email", "name", "role", "bio", "headline", "profile_photo_url", "linkedin_url")
             .eq("id", user_id)
             .execute()
@@ -428,7 +428,7 @@ async def update_profile(
     if new_email and new_email != current_user["email"]:
         # Verify email is not already taken in the public database
         existing_res = (
-            supabase_client.table("users")
+            supabase_service_client.table("users")
             .select("id")
             .eq("email", new_email)
             .execute()
@@ -467,7 +467,7 @@ async def update_profile(
 
     try:
         db_res = (
-            supabase_client.table("users")
+            supabase_service_client.table("users")
             .update(db_updates)
             .eq("id", user_id)
             .execute()
@@ -534,7 +534,7 @@ async def verify_otp(verify_data: UserVerifyOTP, response: Response):
     # Query the user profile from the database to ensure sync
     try:
         db_res = (
-            supabase_client.table("users")
+            supabase_service_client.table("users")
             .select("id", "email", "name", "role", "bio", "headline", "profile_photo_url", "linkedin_url")
             .eq("id", user_id)
             .execute()
@@ -678,7 +678,7 @@ async def reset_password(data: ResetPasswordRequest):
 
     # Step 3: Update password hash in public.users table (using global service_role client)
     try:
-        supabase_client.table("users").update(
+        supabase_service_client.table("users").update(
             {"password_hash": hash_password(data.new_password)}
         ).eq("id", user_id).execute()
     except Exception:

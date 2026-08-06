@@ -1,0 +1,37 @@
+[
+  {
+    "id": "2ea18f7d-c6e6-4b6a-bc31-fd78bf56225a",
+    "startup_name": "Startup a17a39",
+    "founder_id": "445c61ee-8117-4863-b5d5-5aebc4728899"
+  },
+  {
+    "id": "c297699e-4dc6-4d04-ad66-a5957c21f6e2",
+    "startup_name": "Startup bd2423",
+    "founder_id": "445c61ee-8117-4863-b5d5-5aebc4728899"
+  },
+  {
+    "id": "c6e7f1a3-50b5-46e2-b917-c8414ae45e4d",
+    "startup_name": "corp",
+    "founder_id": "52f133ff-b159-4b92-bb31-20a7994fb202"
+  },
+  {
+    "id": "4be0b1bd-db66-4e19-9915-98c7a487e6b1",
+    "startup_name": "Test Startup",
+    "founder_id": "361210b8-866d-428e-9bb8-ad1f8243ac00"
+  },
+  {
+    "id": "8ec8b958-5e88-4f14-acfc-1944b0f94804",
+    "startup_name": "neura-robotics",
+    "founder_id": "25c6834f-17e4-4eb7-bf1f-e76582333fc4"
+  },
+  {
+    "id": "ffde3318-58b1-46cc-bfe8-c31741494074",
+    "startup_name": "ventureai",
+    "founder_id": "0b904de2-dd3b-436a-ba81-5580324f630d"
+  },
+  {
+    "id": "ed2f0943-0f75-4e6e-b4ae-0cdd087f0775",
+    "startup_name": "VoltPath",
+    "founder_id": "25c6834f-17e4-4eb7-bf1f-e76582333fc4"
+  }
+]
