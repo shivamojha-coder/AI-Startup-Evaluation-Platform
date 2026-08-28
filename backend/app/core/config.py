@@ -44,7 +44,11 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
 
     # ── CORS ─────────────────────────────────────────────────────────────────
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:5173"]
+    ALLOWED_ORIGINS: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:8000",
+        "https://ai-startup-evaluation-git-1b15af-mrsnewzebral84-9892s-projects.vercel.app"
+    ]
 
     # ── Cloudinary ───────────────────────────────────────────────────────────
     CLOUDINARY_CLOUD_NAME: NonEmptyStr  # required
