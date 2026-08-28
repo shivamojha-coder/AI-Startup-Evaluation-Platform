@@ -27,7 +27,9 @@ router = APIRouter()
 
 
 def _cookie_secure() -> bool:
-    return not settings.is_development
+    # Cross-domain cookies (Vercel frontend + Railway backend) MUST have secure=True 
+    # and samesite="none", regardless of development environment.
+    return True
 
 
 @router.post(
@@ -220,7 +222,7 @@ async def login(login_data: UserLogin, response: Response):
         value=session.access_token,
         httponly=True,
         secure=_cookie_secure(),
-        samesite="lax",
+        samesite="none",
         max_age=session.expires_in,
         path="/",
     )
@@ -232,7 +234,7 @@ async def login(login_data: UserLogin, response: Response):
             value=session.refresh_token,
             httponly=True,
             secure=_cookie_secure(),
-            samesite="lax",
+            samesite="none",
             max_age=session.expires_in * 10,
             path="/",
         )
@@ -367,7 +369,7 @@ async def oauth_callback(code: str, role: str = "founder", redirect_url: str = "
         value=session.access_token,
         httponly=True,
         secure=_cookie_secure(),
-        samesite="lax",
+        samesite="none",
         max_age=session.expires_in,
         path="/",
     )
@@ -379,7 +381,7 @@ async def oauth_callback(code: str, role: str = "founder", redirect_url: str = "
             value=session.refresh_token,
             httponly=True,
             secure=_cookie_secure(),
-            samesite="lax",
+            samesite="none",
             max_age=session.expires_in * 10,
             path="/",
         )
@@ -560,7 +562,7 @@ async def verify_otp(verify_data: UserVerifyOTP, response: Response):
         value=session.access_token,
         httponly=True,
         secure=_cookie_secure(),
-        samesite="lax",
+        samesite="none",
         max_age=session.expires_in,
         path="/",
     )
@@ -572,7 +574,7 @@ async def verify_otp(verify_data: UserVerifyOTP, response: Response):
             value=session.refresh_token,
             httponly=True,
             secure=_cookie_secure(),
-            samesite="lax",
+            samesite="none",
             max_age=session.expires_in * 10,
             path="/",
         )
@@ -702,13 +704,13 @@ async def logout(response: Response):
         path="/",
         httponly=True,
         secure=_cookie_secure(),
-        samesite="lax",
+        samesite="none",
     )
     response.delete_cookie(
         key="refresh_token",
         path="/",
         httponly=True,
         secure=_cookie_secure(),
-        samesite="lax",
+        samesite="none",
     )
     return {"status": "success", "message": "Logged out successfully."}
