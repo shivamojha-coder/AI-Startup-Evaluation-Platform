@@ -264,6 +264,9 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
         if role not in ("founder", "investor"):
             role = "founder"
         base_url = str(request.base_url).rstrip("/")
+        
+        if "railway.app" in base_url and base_url.startswith("http://"):
+            base_url = base_url.replace("http://", "https://")
         callback_uri = f"{base_url}/auth/callback?role={role}&redirect_url={redirect_url}"
         res = supabase_client.auth.sign_in_with_oauth({
             "provider": "google",
