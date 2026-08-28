@@ -131,7 +131,7 @@ export const StartupComparison: React.FC = () => {
 
                         // Special rendering
                         if (row.key === "score") {
-                          const score = value as number;
+                          const score = (value as unknown) as number;
                           let color = "text-[#FE9638]";
                           if (score >= 90) color = "text-[#34D399]";
                           else if (score >= 80) color = "text-[#38BDF8]";

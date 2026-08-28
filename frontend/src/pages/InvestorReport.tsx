@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { getStartup, getEvaluations, getEvaluationReport, type EvaluationReportResponse, verifyClaim, startupAiChat, type VerifyClaimResponse, requestMeeting, getInvestorMeetings, toggleShortlistAPI, getShortlistedAPI } from "../api/startups";
+import { getStartup, getEvaluations, getEvaluationReport, type EvaluationReportResponse, verifyClaim, type VerifyClaimResponse, requestMeeting, getInvestorMeetings, toggleShortlistAPI, getShortlistedAPI } from "../api/startups";
 import type { StartupResponse } from "../schemas/startup"
 import ReactMarkdown from "react-markdown";
 import { useChatStore } from "../store/chatStore";
@@ -392,6 +392,7 @@ export const InvestorReport: React.FC = () => {
           )}
 
           {/* Executive Summary */}
+          {summary && (
           <SectionCard title="Executive Summary">
             <div className="space-y-6">
               <div>
@@ -430,6 +431,7 @@ export const InvestorReport: React.FC = () => {
               )}
             </div>
           </SectionCard>
+          )}
 
           {/* Verification Section — Investor only */}
           {!isFounder && (

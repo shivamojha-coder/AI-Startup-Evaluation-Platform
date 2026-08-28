@@ -133,7 +133,6 @@ export const DashboardFounder: React.FC = () => {
   const founderProgress = getFounderCompleteness();
   const startupProgress = getStartupCompleteness(currentStartup);
   const overallProgress = Math.round((founderProgress * 0.3) + (startupProgress * 0.7));
-  const completenessVal = `${overallProgress}%`;
 
   const docCount = documents.length > 0 ? String(documents.length) : "1";
   

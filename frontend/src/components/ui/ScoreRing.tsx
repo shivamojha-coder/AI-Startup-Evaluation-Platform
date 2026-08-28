@@ -12,7 +12,7 @@ interface ScoreRingProps {
 export const ScoreRing: React.FC<ScoreRingProps> = ({
   score,
   max = 100,
-  size = 72,
+  size: _size = 72,
   strokeWidth = 8,
 }) => {
   const ref = useRef<HTMLDivElement>(null);

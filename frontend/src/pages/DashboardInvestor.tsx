@@ -156,14 +156,6 @@ export const DashboardInvestor: React.FC = () => {
     }
   };
 
-  const fetchMeetingRequests = async () => {
-    try {
-      const data = await getInvestorMeetings();
-      setMeetingRequests(data);
-    } catch (err) {
-      console.error("Failed to fetch meetings", err);
-    }
-  };
 
   useEffect(() => {
     const updateLimit = () => {

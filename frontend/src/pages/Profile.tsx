@@ -8,11 +8,9 @@ import { Link } from "react-router-dom";
 import {
   User,
   Mail,
-  AlignLeft,
   Save,
   Building2,
   TrendingUp,
-  FileText,
   Sparkles,
   CheckCircle2,
   AlertCircle,
@@ -28,7 +26,7 @@ import {
   ChevronRight,
   Lock
 } from "lucide-react";
-import { motion, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 const AnimatedCounter = ({ value }: { value: number }) => {
   const [displayValue, setDisplayValue] = useState(0);
@@ -126,7 +124,6 @@ export const Profile: React.FC = () => {
     return score;
   };
 
-  const founderCompleteness = getFounderCompleteness();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

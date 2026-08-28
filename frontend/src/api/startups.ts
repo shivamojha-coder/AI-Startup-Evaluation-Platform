@@ -441,8 +441,13 @@ export async function getDealflow(params?: {
 export interface ComparedStartup {
   id: string;
   name: string;
+  industry?: string;
+  stage?: string;
+  funding_ask?: string | number;
+  score?: number;
+  market?: string;
 }
-export async function compareStartups(ids: string[]): Promise<any> {
+export async function compareStartups(_ids: string[]): Promise<any> {
   return {};
 }
 
@@ -458,6 +463,7 @@ export interface MeetingRequestResponse {
   meeting_link: string | null;
   created_at: string;
   updated_at: string;
+  declined_at?: string | null;
   startups?: { startup_name: string };
   users?: { name: string; profile_photo_url: string };
 }

@@ -114,7 +114,6 @@ export const ChatWidget: React.FC = () => {
     loadSessionMessages,
     pinSession,
     removeSession,
-    addSessionToList,
     updateActiveSessionId,
   } = useChatStore();
 
