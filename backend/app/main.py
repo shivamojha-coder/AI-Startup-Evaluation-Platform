@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from app.api.auth import router as auth_router
 from app.api.health import router as health_router
@@ -19,6 +20,9 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+
+# Handle HTTPS headers behind proxies like Railway
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
 # CORS — allow the Vite dev server during development
 app.add_middleware(
