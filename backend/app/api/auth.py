@@ -3,7 +3,7 @@
 import contextlib
 from typing import Any, cast
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
 from supabase import create_client
 
@@ -256,12 +256,13 @@ async def login(login_data: UserLogin, response: Response):
     "/oauth/google",
     summary="Get Google OAuth authorization URL and redirect",
 )
-async def google_oauth(role: str = "founder", redirect_url: str = "http://localhost:5173"):
+async def google_oauth(request: Request, role: str = "founder", redirect_url: str = "http://localhost:5173"):
     """Initiate Google OAuth login/registration via Supabase."""
     try:
         if role not in ("founder", "investor"):
             role = "founder"
-        callback_uri = f"http://localhost:8000/auth/callback?role={role}&redirect_url={redirect_url}"
+        base_url = str(request.base_url).rstrip("/")
+        callback_uri = f"{base_url}/auth/callback?role={role}&redirect_url={redirect_url}"
         res = supabase_client.auth.sign_in_with_oauth({
             "provider": "google",
             "options": {
