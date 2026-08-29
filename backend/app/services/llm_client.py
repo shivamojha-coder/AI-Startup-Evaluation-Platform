@@ -75,7 +75,7 @@ def call_agent(
     backoff = 3.0
     
     generation_config = {
-        "model": "llama-3.1-8b-instant",
+        "model": "openai/gpt-oss-120b",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message}
@@ -129,7 +129,7 @@ def call_agent(
     )
     
     generation_config_retry = {
-        "model": "llama-3.1-8b-instant",
+        "model": "openai/gpt-oss-120b",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
