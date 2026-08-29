@@ -1,7 +1,7 @@
 import io
 import re
 
-import fitz
+import pymupdf as fitz
 import pytesseract
 from PIL import Image
 from pydantic import BaseModel

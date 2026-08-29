@@ -30,7 +30,7 @@ def run_claim_verification(structured_analysis: dict[str, Any]) -> dict[str, Any
     try:
         extract_res = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": extract_prompt}],
-            model="llama-3.1-70b-versatile",
+            model="mixtral-8x7b-32768",
             response_format={"type": "json_object"},
         )
         
@@ -76,7 +76,7 @@ def run_claim_verification(structured_analysis: dict[str, Any]) -> dict[str, Any
             
             verify_res = groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": verify_prompt}],
-                model="llama-3.1-70b-versatile",
+                model="mixtral-8x7b-32768",
                 response_format={"type": "json_object"},
             )
             

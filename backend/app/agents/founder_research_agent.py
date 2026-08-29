@@ -32,7 +32,7 @@ def run_founder_research(structured_analysis: dict[str, Any]) -> dict[str, Any]:
     try:
         extract_res = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": extract_prompt}],
-            model="llama-3.1-70b-versatile",
+            model="mixtral-8x7b-32768",
             response_format={"type": "json_object"},
         )
         parsed = json.loads(extract_res.choices[0].message.content or "{}")
@@ -64,7 +64,7 @@ def run_founder_research(structured_analysis: dict[str, Any]) -> dict[str, Any]:
         
         analyze_res = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": analyze_prompt}],
-            model="llama-3.1-70b-versatile",
+            model="mixtral-8x7b-32768",
             response_format={"type": "json_object"},
         )
         
