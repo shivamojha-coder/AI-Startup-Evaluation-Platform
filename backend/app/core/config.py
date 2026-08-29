@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: list[str] = [
         "http://localhost:5173",
         "http://localhost:8000",
-        "https://ai-startup-evaluation-git-1b15af-mrsnewzebral84-9892s-projects.vercel.app"
+        "https://ai-startup-evaluation-platform-oz9m.vercel.app"
     ]
 
     # ── Cloudinary ───────────────────────────────────────────────────────────
