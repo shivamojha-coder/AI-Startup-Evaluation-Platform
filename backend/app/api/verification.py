@@ -36,11 +36,15 @@ async def verify_evaluation(
             "id, startups(name, users(name))"
         ).eq("id", evaluation_id).single().execute()
         
-        if not eval_res.data:
+        data = eval_res.data
+        if not isinstance(data, dict):
             raise HTTPException(status_code=404, detail="Evaluation not found")
             
-        startup_name = eval_res.data.get("startups", {}).get("name", "Unknown Startup")
-        founder_name = eval_res.data.get("startups", {}).get("users", {}).get("name", "Unknown Founder")
+        startups: dict = data.get("startups") if isinstance(data.get("startups"), dict) else {}
+        users: dict = startups.get("users") if isinstance(startups.get("users"), dict) else {}
+        
+        startup_name = startups.get("name", "Unknown Startup")
+        founder_name = users.get("name", "Unknown Founder")
         
         # Fetch summaries, risks, etc.
         exec_res = supabase_service_client.table("executive_summaries").select("*").eq("evaluation_id", evaluation_id).execute()
@@ -135,12 +139,19 @@ def verify_single_claim(
         cache_resp = supabase_service_client.table("claim_verifications").select("*").eq("startup_id", startup_id).eq("claim_text", request.claim).execute()
         if cache_resp.data:
             cached = cache_resp.data[0]
-            return {
-                "status": cached["status"],
-                "confidence": float(cached["confidence"] or 0.0),
-                "evidence": cached["evidence_data"] or [],
-                "reason": "Retrieved from cache."
-            }
+            if isinstance(cached, dict):
+                conf_val = cached.get("confidence")
+                if isinstance(conf_val, (int, float, str)):
+                    conf = float(conf_val)
+                else:
+                    conf = 0.0
+                
+                return {
+                    "status": cached.get("status", "unverified"),
+                    "confidence": conf,
+                    "evidence": cached.get("evidence_data") or [],
+                    "reason": "Retrieved from cache."
+                }
     except Exception as e:
         logger.warning(f"Cache check failed: {e}")
 
@@ -175,7 +186,7 @@ def verify_single_claim(
         
         verify_res = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": verify_prompt}],
-            model="llama-3.3-70b-versatile",
+            model="llama3-70b-8192",
             response_format={"type": "json_object"},
         )
         
