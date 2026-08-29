@@ -37,7 +37,7 @@ def run_manipulation_detection(structured_analysis: dict[str, Any]) -> dict[str,
     try:
         analyze_res = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": analyze_prompt}],
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             response_format={"type": "json_object"},
         )
         
