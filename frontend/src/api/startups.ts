@@ -31,7 +31,7 @@ function getAuthHeaders(): HeadersInit {
 }
 
 export async function getStartups(): Promise<StartupResponse[]> {
-  const response = await fetch(`${API_URL}/startups`, {
+  const response = await fetch(`${API_URL}/startups/`, {
     headers: getAuthHeaders(),
     credentials: "include",
   });
@@ -71,7 +71,7 @@ export async function createStartup(data: StartupFormData): Promise<StartupRespo
     linkedin_url: data.linkedin_url || undefined,
   };
 
-  const response = await fetch(`${API_URL}/startups`, {
+  const response = await fetch(`${API_URL}/startups/`, {
     method: "POST",
     headers: getAuthHeaders(),
     credentials: "include",
