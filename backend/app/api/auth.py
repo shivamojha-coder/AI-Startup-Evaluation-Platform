@@ -266,7 +266,11 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
             
         # Prevent open redirect by validating against ALLOWED_ORIGINS
         if redirect_url not in settings.ALLOWED_ORIGINS:
-            redirect_url = settings.ALLOWED_ORIGINS[0] if settings.ALLOWED_ORIGINS else "http://localhost:5173"
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid OAuth redirect URL"
+            )
+
         
         # Use the frontend redirect URL for the Supabase redirect_to whitelist
         callback_uri = f"{redirect_url}/auth/callback?role={role}"
@@ -310,7 +314,10 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
 async def oauth_callback(request: Request, code: str, role: str = "founder", redirect_url: str = "http://localhost:5173"):
     """Exchange OAuth code for session, sync user in database, set httpOnly cookies, and redirect to dashboard."""
     if redirect_url not in settings.ALLOWED_ORIGINS:
-        redirect_url = settings.ALLOWED_ORIGINS[0] if settings.ALLOWED_ORIGINS else "http://localhost:5173"
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid OAuth redirect URL"
+        )
 
     try:
         verifier = request.cookies.get("sb-pkce-verifier")
