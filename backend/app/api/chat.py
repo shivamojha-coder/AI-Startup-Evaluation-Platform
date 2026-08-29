@@ -346,7 +346,7 @@ def startup_ai_chat(
 
         chat_res = groq_client.chat.completions.create(
             messages=messages,
-            model="llama3-70b-8192",
+            model="llama-3.1-70b-versatile",
         )
 
         answer = chat_res.choices[0].message.content or "I'm sorry, I couldn't generate an answer."

@@ -186,7 +186,7 @@ def verify_single_claim(
         
         verify_res = groq_client.chat.completions.create(
             messages=[{"role": "user", "content": verify_prompt}],
-            model="llama3-70b-8192",
+            model="llama-3.1-70b-versatile",
             response_format={"type": "json_object"},
         )
         
