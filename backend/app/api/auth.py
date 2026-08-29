@@ -263,11 +263,14 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
     try:
         if role not in ("founder", "investor"):
             role = "founder"
-        base_url = str(request.base_url).rstrip("/")
+            
+        # Prevent open redirect by validating against ALLOWED_ORIGINS
+        if redirect_url not in settings.ALLOWED_ORIGINS:
+            redirect_url = settings.ALLOWED_ORIGINS[0] if settings.ALLOWED_ORIGINS else "http://localhost:5173"
         
-        if "railway.app" in base_url and base_url.startswith("http://"):
-            base_url = base_url.replace("http://", "https://")
-        callback_uri = f"{base_url}/auth/callback?role={role}&redirect_url={redirect_url}"
+        # Use the frontend redirect URL for the Supabase redirect_to whitelist
+        callback_uri = f"{redirect_url}/auth/callback?role={role}"
+        
         res = supabase_client.auth.sign_in_with_oauth({
             "provider": "google",
             "options": {
@@ -276,7 +279,23 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
         })
         if not res or not res.url:
             raise HTTPException(status_code=500, detail="Failed to get Google OAuth URL from Supabase.")
-        return RedirectResponse(url=res.url)
+        
+        response = RedirectResponse(url=res.url)
+        
+        # Extract the PKCE verifier (key specific to gotrue-py > 2.30) and store it in a cookie
+        verifier = supabase_client.auth._storage.get_item("supabase.auth.token-code-verifier")
+        if verifier:
+            response.set_cookie(
+                key="sb-pkce-verifier",
+                value=verifier,
+                httponly=True,
+                secure=_cookie_secure(),
+                samesite="none",
+                max_age=300,
+                path="/"
+            )
+            
+        return response
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -288,9 +307,16 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
     "/callback",
     summary="Handle OAuth callback from Supabase/Google",
 )
-async def oauth_callback(code: str, role: str = "founder", redirect_url: str = "http://localhost:5173"):
+async def oauth_callback(request: Request, code: str, role: str = "founder", redirect_url: str = "http://localhost:5173"):
     """Exchange OAuth code for session, sync user in database, set httpOnly cookies, and redirect to dashboard."""
+    if redirect_url not in settings.ALLOWED_ORIGINS:
+        redirect_url = settings.ALLOWED_ORIGINS[0] if settings.ALLOWED_ORIGINS else "http://localhost:5173"
+
     try:
+        verifier = request.cookies.get("sb-pkce-verifier")
+        if verifier:
+            supabase_client.auth._storage.set_item("supabase.auth.token-code-verifier", verifier)
+            
         auth_response = supabase_client.auth.exchange_code_for_session({"auth_code": code})  # type: ignore
     except Exception as e:
         raise HTTPException(
@@ -375,6 +401,15 @@ async def oauth_callback(code: str, role: str = "founder", redirect_url: str = "
         samesite="none",
         max_age=session.expires_in,
         path="/",
+    )
+    
+    # Clean up the PKCE cookie
+    redirect_res.delete_cookie(
+        key="sb-pkce-verifier",
+        path="/",
+        httponly=True,
+        secure=_cookie_secure(),
+        samesite="none",
     )
 
     # Set refresh_token cookie

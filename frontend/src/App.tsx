@@ -19,6 +19,7 @@ import { StartupComparison } from "./pages/StartupComparison";
 import { InvestorReport } from "./pages/InvestorReport";
 import { Profile } from "./pages/Profile";
 import { ForgotPassword } from "./pages/ForgotPassword";
+import { AuthCallback } from "./pages/AuthCallback";
 
 import { Pricing } from "./pages/Pricing";
 import { About } from "./pages/About";
@@ -92,6 +93,10 @@ function AppRoutes() {
             <VerifyOTP />
           </AuthLayout>
         }
+      />
+      <Route
+        path="/auth/callback"
+        element={<AuthCallback />}
       />
       <Route
         path="/forgot-password"
