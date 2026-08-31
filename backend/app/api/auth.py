@@ -273,7 +273,10 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
 
         
         # Use the frontend redirect URL for the Supabase redirect_to whitelist
-        callback_uri = f"{redirect_url}/auth/callback?role={role}"
+        if settings.is_development:
+            callback_uri = f"{redirect_url}/auth/callback"
+        else:
+            callback_uri = f"{redirect_url}/auth/callback?role={role}"
         
         res = supabase_client.auth.sign_in_with_oauth({
             "provider": "google",
@@ -286,7 +289,6 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
         
         response = RedirectResponse(url=res.url)
         
-        # Extract the PKCE verifier (key specific to gotrue-py > 2.30) and store it in a cookie
         verifier = supabase_client.auth._storage.get_item("supabase.auth.token-code-verifier")
         if verifier:
             response.set_cookie(
@@ -295,6 +297,17 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
                 httponly=True,
                 secure=_cookie_secure(),
                 samesite="none",
+                max_age=300,
+                path="/"
+            )
+            
+        if settings.is_development:
+            response.set_cookie(
+                key="oauth_role",
+                value=role,
+                httponly=True,
+                secure=_cookie_secure(),
+                samesite="lax",
                 max_age=300,
                 path="/"
             )
@@ -341,7 +354,11 @@ async def oauth_callback(request: Request, code: str, role: str = "founder", red
     user = auth_response.user
     user_id = user.id
 
-    if role not in ("founder", "investor"):
+    # In development, the role might be passed via cookie because it was omitted from the redirect_to URL
+    cookie_role = request.cookies.get("oauth_role")
+    if cookie_role in ("founder", "investor"):
+        role = cookie_role
+    elif role not in ("founder", "investor"):
         role = "founder"
 
     # Query or insert user into public.users table using service client to bypass RLS

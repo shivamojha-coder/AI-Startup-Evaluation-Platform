@@ -177,7 +177,7 @@ def chunk_text(cleaned_text: str) -> list[str]:
     Returns at least 1 chunk even for short documents.
     """
     if not cleaned_text:
-        return [cleaned_text] if cleaned_text else []
+        return []
 
     # Target ~750 words per chunk (approx 975 tokens)
     max_words = 750
