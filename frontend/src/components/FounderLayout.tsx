@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ShinyText } from "./ui/ShinyText";
@@ -11,13 +11,20 @@ import {
   Users,
   User, 
   LogOut,
-  Crown
+  Crown,
+  Menu,
+  X
 } from "lucide-react";
 
 export const FounderLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname, location.search]);
 
   const handleLogout = async () => {
     await logout();
@@ -36,8 +43,39 @@ export const FounderLayout: React.FC<{ children: React.ReactNode }> = ({ childre
 
   return (
     <div className="flex min-h-screen bg-transparent text-[#ffffff] font-sans antialiased selection:bg-[rgba(249,115,22,0.2)] selection:text-[#f97316]">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#0f0f0f] border-b border-[#1e1e1e] flex items-center justify-between px-4 z-40">
+        <Link to="/" className="flex items-center gap-2 group">
+          <svg className="w-6 h-6 text-[#f97316]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+          <span className="text-lg font-bold tracking-tight text-white">
+            <ShinyText text="VentureAI" baseColor="rgba(255,255,255,0.85)" shineColor="#FFFFFF" speed={5} />
+          </span>
+        </Link>
+        <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-white">
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Left Sidebar: fixed, 240px wide, full height */}
-      <aside className="w-[240px] bg-[#0f0f0f] border-r border-[#1e1e1e] flex flex-col fixed inset-y-0 left-0 z-50">
+      <aside className={`w-[240px] bg-[#0f0f0f] border-r border-[#1e1e1e] flex flex-col fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        
+        {/* Mobile Close Button (only visible on mobile inside sidebar) */}
+        <button 
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="md:hidden absolute top-4 right-4 p-2 text-gray-400 hover:text-white"
+        >
+          <X className="w-5 h-5" />
+        </button>
         
         {/* Top Logo */}
         <div className="p-[24px] pb-[20px] flex items-center gap-2.5 border-b border-[#1e1e1e]">
@@ -110,8 +148,8 @@ export const FounderLayout: React.FC<{ children: React.ReactNode }> = ({ childre
 
       </aside>
 
-      {/* Main Content Area: fills remaining width, scrollable, padding 32px */}
-      <main className="flex-1 ml-[240px] flex flex-col min-h-screen p-[32px] overflow-y-auto">
+      {/* Main Content Area: fills remaining width, scrollable */}
+      <main className="flex-1 ml-0 md:ml-[240px] flex flex-col min-h-screen p-4 pt-20 md:p-[32px] overflow-y-auto">
         {children}
       </main>
     </div>

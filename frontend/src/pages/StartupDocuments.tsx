@@ -601,7 +601,7 @@ export const StartupDocuments: React.FC = () => {
                 </p>
               </div>
             ) : (
-              <div className="overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)]">
+              <div className="overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] overflow-x-auto">
                 <table className="w-full text-left text-sm text-[#FAFAFA]">
                   <thead className="bg-[#1C1C1C] text-xs font-bold uppercase tracking-wider text-[#9A9A9A]">
                     <tr>

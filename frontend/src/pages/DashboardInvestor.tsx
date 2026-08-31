@@ -624,7 +624,7 @@ export const DashboardInvestor: React.FC = () => {
 
             {/* Schedule Meeting Modal */}
             {showMeetingModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowMeetingModal(false)}>
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowMeetingModal(false)}>
                 <div className="bg-[#141414] border border-[rgba(255,255,255,0.1)] rounded-2xl p-8 w-full max-w-md shadow-2xl" onClick={(e) => e.stopPropagation()}>
                   <h2 className="text-xl font-bold text-[#FAFAFA] mb-1">Schedule Meeting</h2>
                   <p className="text-sm text-[#9A9A9A] mb-6">Choose a date, time, and provide your meeting link.</p>

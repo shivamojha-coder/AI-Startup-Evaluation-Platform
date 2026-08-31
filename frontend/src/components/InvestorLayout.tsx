@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ShinyText } from "./ui/ShinyText";
@@ -9,13 +9,20 @@ import {
   Calendar,
   User, 
   LogOut,
-  Sparkles
+  Sparkles,
+  Menu,
+  X
 } from "lucide-react";
 
 export const InvestorLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname, location.search]);
 
   const handleLogout = async () => {
     await logout();
@@ -32,8 +39,39 @@ export const InvestorLayout: React.FC<{ children: React.ReactNode }> = ({ childr
 
   return (
     <div className="flex min-h-screen bg-transparent text-[#ffffff] font-sans antialiased selection:bg-[rgba(254,150,56,0.2)] selection:text-[#FE9638]">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#0f0f0f] border-b border-[#1e1e1e] flex items-center justify-between px-4 z-40">
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[rgba(254,150,56,0.15)] text-[#FE9638]">
+            <span className="text-sm font-black">V</span>
+          </div>
+          <span className="text-lg font-black tracking-tight text-[#FAFAFA]">
+            <ShinyText text="Venture" baseColor="rgba(250,250,250,0.85)" shineColor="#FFFFFF" speed={5} /><ShinyText text="AI" baseColor="#FE9638" shineColor="#FFFFFF" speed={5} />
+          </span>
+        </Link>
+        <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-white">
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Left Sidebar: fixed, 240px wide, full height */}
-      <aside className="w-[240px] bg-[#0f0f0f] border-r border-[#1e1e1e] flex flex-col fixed inset-y-0 left-0 z-50">
+      <aside className={`w-[240px] bg-[#0f0f0f] border-r border-[#1e1e1e] flex flex-col fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        
+        {/* Mobile Close Button (only visible on mobile inside sidebar) */}
+        <button 
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="md:hidden absolute top-4 right-4 p-2 text-gray-400 hover:text-white"
+        >
+          <X className="w-5 h-5" />
+        </button>
         
         {/* Top Logo */}
         <div className="p-[24px] pb-[20px] flex items-center gap-2.5 border-b border-[#1e1e1e]">
@@ -120,7 +158,7 @@ export const InvestorLayout: React.FC<{ children: React.ReactNode }> = ({ childr
       </aside>
 
       {/* Main Content Area: fills remaining width, scrollable */}
-      <main className="flex-1 ml-[240px] flex flex-col min-h-screen">
+      <main className="flex-1 ml-0 md:ml-[240px] flex flex-col min-h-screen pt-16 md:pt-0">
         {children}
       </main>
     </div>

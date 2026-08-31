@@ -164,9 +164,9 @@ export const Register: React.FC = () => {
       : "";
 
   return (
-    <div className="bg-transparent h-screen w-screen overflow-hidden font-sans text-white flex items-center justify-center p-2 sm:p-4 lg:p-6 [perspective:1400px]">
+    <div className="bg-transparent min-h-screen w-full overflow-y-auto overflow-x-hidden font-sans text-white flex items-center justify-center p-4 sm:p-6 lg:p-8 [perspective:1400px]">
       {/* Centered Large Card fitted to screen without scroll and with 3D Flip Animation */}
-      <div className={`max-w-[1100px] w-full h-full max-h-[720px] bg-[#111111] border border-[#1e1e1e] rounded-[16px] shadow-2xl overflow-hidden flex flex-col transition-all ${flipClass}`}>
+      <div className={`max-w-[1100px] w-full bg-[#111111] border border-[#1e1e1e] rounded-[16px] shadow-2xl overflow-hidden flex flex-col transition-all min-h-[600px] lg:h-[720px] ${flipClass}`}>
         
         {/* Top Bar spanning full card width */}
         <div className="w-full border-b border-[#1e1e1e] px-6 py-3 flex items-center justify-between shrink-0 bg-[#111111] z-20">

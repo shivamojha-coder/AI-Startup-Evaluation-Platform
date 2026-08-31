@@ -43,7 +43,7 @@ export const Hero: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative bg-[#0d0d0d] pt-[150px] pb-[160px] overflow-hidden">
+    <section className="relative bg-[#0d0d0d] pt-28 md:pt-[150px] pb-24 md:pb-[160px] overflow-hidden">
       {/* BACKGROUND GRID — much more subtle */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {filledTiles.map((tile, idx) => (
