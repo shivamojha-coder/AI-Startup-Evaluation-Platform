@@ -50,9 +50,7 @@ async def extract_text(file_bytes: bytes, file_name: str) -> ExtractionResult:
             parser = LlamaParse(
                 api_key=settings.LLAMA_CLOUD_API_KEY,
                 result_type="markdown",
-                use_vendor_multimodal_model=True,
-                vendor_multimodal_model_name="openai-gpt4o",
-                verbose=False
+                verbose=False,
             )
             
             # LlamaParse needs a file on disk

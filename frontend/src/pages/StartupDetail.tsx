@@ -13,7 +13,6 @@ import { OnlinePresenceCard } from "../components/startup/OnlinePresenceCard";
 import { FounderCard } from "../components/startup/FounderCard";
 import { DocumentCard } from "../components/startup/DocumentCard";
 import { InsightCard } from "../components/startup/InsightCard";
-import { TimelineCard } from "../components/startup/TimelineCard";
 import { EditStartupModal } from "../components/startup/EditStartupModal";
 
 export const StartupDetail: React.FC = () => {
@@ -89,12 +88,12 @@ export const StartupDetail: React.FC = () => {
         
         <StartupHero startup={startup!} onEdit={handleEdit} />
 
-        <QuickStatusCards />
+        <QuickStatusCards startup={startup!} startupId={id!} />
 
         {/* Tabs */}
         <div className="border-b border-[#262626]">
           <div className="flex items-center gap-8">
-            {["Overview", "Documents", "AI Insights", "Activity"].map((tab) => {
+            {["Overview", "Documents", "AI Insights"].map((tab) => {
               const tabId = tab.toLowerCase().replace(" ", "-");
               const isActive = activeTab === tabId;
               return (
@@ -120,7 +119,7 @@ export const StartupDetail: React.FC = () => {
               <div className="lg:col-span-2 space-y-8">
                 <BasicInfoCard startup={startup!} onEdit={handleEdit} />
                 <CompanyDetailsCard startup={startup!} onEdit={handleEdit} />
-                <FounderCard />
+                <FounderCard startup={startup!} />
               </div>
               <div className="lg:col-span-1 space-y-8">
                 <OnlinePresenceCard startup={startup!} onEdit={handleEdit} />
@@ -130,19 +129,13 @@ export const StartupDetail: React.FC = () => {
 
           {activeTab === "documents" && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <DocumentCard />
+              <DocumentCard startupId={id!} />
             </div>
           )}
 
           {activeTab === "ai-insights" && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <InsightCard />
-            </div>
-          )}
-
-          {activeTab === "activity" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-3xl">
-              <TimelineCard />
+              <InsightCard startupId={id!} />
             </div>
           )}
         </div>

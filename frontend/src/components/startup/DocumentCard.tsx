@@ -1,71 +1,166 @@
-import React from "react";
-import { FileText, Download, Eye, RefreshCw, Plus } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { FileText, Eye, Upload, CheckCircle2, Clock, AlertCircle, ArrowRight } from "lucide-react";
+import { getDocuments, type DocumentResponse } from "../../api/startups";
 
-export const DocumentCard: React.FC = () => {
-  const documents = [
-    { type: "Pitch Deck", status: "Uploaded", date: "Oct 12, 2023", fileType: "PDF" },
-    { type: "Business Plan", status: "Missing", date: "-", fileType: "-" },
-    { type: "Financial Projection", status: "Uploaded", date: "Oct 10, 2023", fileType: "XLSX" },
-    { type: "Product Demo", status: "Missing", date: "-", fileType: "-" },
-  ];
+interface DocumentCardProps {
+  startupId?: string;
+}
+
+export const DocumentCard: React.FC<DocumentCardProps> = ({ startupId }) => {
+  const [documents, setDocuments] = useState<DocumentResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!startupId) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchDocs = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const docs = await getDocuments(startupId);
+        setDocuments(docs);
+      } catch (err: any) {
+        console.error("Failed to load documents", err);
+        setError(err.message || "Failed to load documents");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDocs();
+  }, [startupId]);
 
   return (
     <div className="bg-[#151515] border border-[#262626] rounded-[22px] p-6 lg:p-8">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-[#0B0B0B] border border-[#262626] flex items-center justify-center">
             <FileText className="w-5 h-5 text-[#FF8A24]" />
           </div>
-          <h3 className="text-lg font-semibold text-white">Documents</h3>
+          <div>
+            <h3 className="text-lg font-semibold text-white">Startup Documents</h3>
+            <p className="text-xs text-[#A1A1AA]">Pitch decks and investor presentation files</p>
+          </div>
         </div>
+        {startupId && (
+          <Link
+            to={`/founder/startups/${startupId}/documents`}
+            className="flex items-center gap-2 px-4 py-2 bg-[#FF8A24] hover:bg-[#FF8A24]/90 text-[#0A0A0A] font-semibold text-xs rounded-xl transition-all shadow-lg shadow-[#FF8A24]/20"
+          >
+            <Upload className="w-4 h-4" />
+            Upload New Deck
+          </Link>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {documents.map((doc, idx) => (
-          <div key={idx} className="bg-[#0B0B0B] border border-[#262626] rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-[#FF8A24]/30 transition-colors">
-            <div className="flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${doc.status === 'Uploaded' ? 'bg-[#FF8A24]/10 border-[#FF8A24]/20 text-[#FF8A24]' : 'bg-[#151515] border-[#262626] text-[#A1A1AA]'}`}>
-                <FileText className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-white font-medium">{doc.type}</h4>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${doc.status === 'Uploaded' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
-                    {doc.status}
+      {loading ? (
+        <div className="py-12 flex flex-col items-center justify-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-[#FF8A24] border-t-transparent animate-spin" />
+          <p className="text-xs text-[#A1A1AA]">Loading documents...</p>
+        </div>
+      ) : error ? (
+        <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl text-center">
+          <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
+          <p className="text-sm font-medium text-red-400">{error}</p>
+        </div>
+      ) : documents.length === 0 ? (
+        <div className="p-8 sm:p-12 bg-[#0B0B0B] border border-dashed border-[#262626] rounded-2xl text-center flex flex-col items-center">
+          <div className="w-16 h-16 rounded-2xl bg-[#151515] border border-[#262626] flex items-center justify-center mb-4 text-[#A1A1AA]">
+            <FileText className="w-8 h-8 text-[#FF8A24]" />
+          </div>
+          <h4 className="text-white font-semibold text-base mb-1">No Pitch Decks Uploaded Yet</h4>
+          <p className="text-xs text-[#A1A1AA] max-w-sm mb-6 leading-relaxed">
+            Upload your pitch deck (PDF or PPTX) to trigger the multi-agent AI evaluation, scorecards, and investor diligence report.
+          </p>
+          {startupId && (
+            <Link
+              to={`/founder/startups/${startupId}/documents`}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#FF8A24] text-[#0A0A0A] font-bold text-xs rounded-xl hover:bg-[#E28528] transition-all"
+            >
+              <Upload className="w-4 h-4" />
+              Upload Pitch Deck Now
+            </Link>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {documents.map((doc) => {
+            const isCompleted = doc.status === "completed";
+            const isFailed = doc.status === "failed";
+            const isProcessing = doc.status === "processing" || doc.status === "pending";
+
+            return (
+              <div
+                key={doc.id}
+                className="bg-[#0B0B0B] border border-[#262626] rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-[#FF8A24]/30 transition-colors"
+              >
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center border bg-[#FF8A24]/10 border-[#FF8A24]/20 text-[#FF8A24] shrink-0">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-white font-semibold text-sm truncate max-w-xs sm:max-w-md">{doc.file_name}</h4>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#1C1C1C] text-[#A1A1AA] border border-[#262626]">
+                        v{doc.version}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-[#A1A1AA]">
+                      <span>{doc.file_size_kb ? `${(doc.file_size_kb / 1024).toFixed(1)} MB` : "PDF"}</span>
+                      {doc.page_count && <span>• {doc.page_count} pages</span>}
+                      <span>• {new Date(doc.uploaded_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 shrink-0">
+                  <span
+                    className={`text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 border ${
+                      isCompleted
+                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                        : isFailed
+                        ? "bg-red-500/10 text-red-400 border-red-500/20"
+                        : "bg-[#FF8A24]/10 text-[#FF8A24] border-[#FF8A24]/20"
+                    }`}
+                  >
+                    {isCompleted ? (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Analyzed
+                      </>
+                    ) : isFailed ? (
+                      <>
+                        <AlertCircle className="w-3.5 h-3.5" />
+                        Failed
+                      </>
+                    ) : (
+                      <>
+                        <Clock className="w-3.5 h-3.5 animate-spin" />
+                        Processing AI
+                      </>
+                    )}
                   </span>
-                  {doc.status === 'Uploaded' && (
-                    <>
-                      <span className="text-[#A1A1AA] text-xs">•</span>
-                      <span className="text-[#A1A1AA] text-xs">{doc.date}</span>
-                    </>
+
+                  {isCompleted && (
+                    <Link
+                      to={`/founder/startups/${startupId}/report/${doc.evaluation_id}`}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#151515] hover:bg-[#202020] border border-[#262626] rounded-xl text-xs font-semibold text-white transition-colors"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-[#FF8A24]" />
+                      View Report
+                    </Link>
                   )}
                 </div>
               </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {doc.status === 'Uploaded' ? (
-                <>
-                  <button className="p-2 rounded-lg bg-[#151515] border border-[#262626] text-[#A1A1AA] hover:text-white hover:border-[#FF8A24] transition-colors" title="Preview">
-                    <Eye className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 rounded-lg bg-[#151515] border border-[#262626] text-[#A1A1AA] hover:text-white hover:border-[#FF8A24] transition-colors" title="Download">
-                    <Download className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 rounded-lg bg-[#151515] border border-[#262626] text-[#A1A1AA] hover:text-white hover:border-[#FF8A24] transition-colors" title="Replace">
-                    <RefreshCw className="w-4 h-4" />
-                  </button>
-                </>
-              ) : (
-                <button className="flex items-center gap-2 px-4 py-2 bg-[#FF8A24] text-white rounded-lg hover:bg-[#FF8A24]/90 transition-colors text-sm font-medium">
-                  <Plus className="w-4 h-4" />
-                  Upload
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
