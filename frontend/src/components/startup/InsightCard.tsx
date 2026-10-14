@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { 
   Sparkles, 
   Check, 
-  AlertTriangle, 
   RefreshCw, 
   ArrowRight, 
   FileText, 
@@ -68,6 +67,21 @@ export const InsightCard: React.FC<InsightCardProps> = ({ startupId }) => {
       <div className="bg-[#151515] border border-[#262626] rounded-[22px] p-8 relative overflow-hidden flex flex-col items-center justify-center min-h-[320px]">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#FF8A24] border-t-transparent mb-4" />
         <p className="text-[#A1A1AA] text-sm font-medium animate-pulse">Loading AI insights & analysis...</p>
+      </div>
+    );
+  }
+
+  if (error && !latestEval) {
+    return (
+      <div className="bg-[#151515] border border-red-500/20 rounded-[22px] p-8 text-center">
+        <p className="text-red-400 text-sm font-medium mb-4">{error}</p>
+        <button
+          onClick={fetchInsights}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[#1F1F1F] hover:bg-[#2A2A2A] text-white text-xs font-semibold rounded-xl border border-[#333333] transition-all"
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+          Retry
+        </button>
       </div>
     );
   }

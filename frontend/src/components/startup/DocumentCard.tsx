@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FileText, Eye, Upload, CheckCircle2, Clock, AlertCircle, ArrowRight } from "lucide-react";
+import { FileText, Eye, Upload, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { getDocuments, type DocumentResponse } from "../../api/startups";
 
 interface DocumentCardProps {
@@ -92,7 +92,6 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({ startupId }) => {
           {documents.map((doc) => {
             const isCompleted = doc.status === "completed";
             const isFailed = doc.status === "failed";
-            const isProcessing = doc.status === "processing" || doc.status === "pending";
 
             return (
               <div
