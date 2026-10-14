@@ -14,7 +14,6 @@ import { FounderCard } from "../components/startup/FounderCard";
 import { DocumentCard } from "../components/startup/DocumentCard";
 import { InsightCard } from "../components/startup/InsightCard";
 import { TimelineCard } from "../components/startup/TimelineCard";
-import { ActionCard } from "../components/startup/ActionCard";
 import { EditStartupModal } from "../components/startup/EditStartupModal";
 
 export const StartupDetail: React.FC = () => {
@@ -125,7 +124,6 @@ export const StartupDetail: React.FC = () => {
               </div>
               <div className="lg:col-span-1 space-y-8">
                 <OnlinePresenceCard startup={startup!} onEdit={handleEdit} />
-                <ActionCard />
               </div>
             </div>
           )}
