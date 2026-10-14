@@ -7,8 +7,6 @@ import {
   Building2, 
   FileUp, 
   FileText, 
-  LineChart, 
-  Users,
   User, 
   LogOut,
   Crown,
@@ -36,8 +34,6 @@ export const FounderLayout: React.FC<{ children: React.ReactNode }> = ({ childre
     { name: "My Startup", path: "/founder/startup-redirect", icon: Building2 },
     { name: "Upload Documents", path: "/founder/startup-redirect?action=documents", icon: FileUp },
     { name: "Reports", path: "/founder/startup-redirect?action=report", icon: FileText },
-    { name: "Analytics", path: "#analytics", icon: LineChart },
-    { name: "Investors", path: "#investors", icon: Users },
     { name: "Profile", path: "/founder/profile", icon: User },
   ];
 

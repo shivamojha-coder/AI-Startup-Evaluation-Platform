@@ -313,6 +313,8 @@ async def google_oauth(request: Request, role: str = "founder", redirect_url: st
             )
             
         return response
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
